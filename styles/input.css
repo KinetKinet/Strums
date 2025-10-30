@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.button {
+    @apply w-70 h-30 bg-amber-900 rounded-4xl flex items-center border-4 border-amber-600 hover:border-purple-500 justify-center text-white text-xl font-medium hover:bg-amber-950 transition-all duration-600 ease-in-out
+}
