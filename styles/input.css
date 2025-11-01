@@ -2,17 +2,14 @@
 
 .button {
     @apply 
-    w-70 h-30
+    w-90 h-20
     bg-[#503d1c]
-    rounded-4xl
-    flex
-    items-center
-    justify-center
-    text-white
-    text-xl
-    font-medium
+    rounded-r-full
+    flex items-center justify-center
+    text-white text-xl font-medium
 }
 
 .bg-color {
-    @apply bg-[#a57f40]
+    @apply 
+    bg-[#a57f40]
 }
