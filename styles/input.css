@@ -11,7 +11,7 @@
 }
 
 .bg-waves {
-  background-image: url('/assets/images/waves.png');
+  background-image: url('assets/images/waves.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
