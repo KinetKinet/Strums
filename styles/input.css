@@ -2,12 +2,18 @@
 
 .button {
     border-color:#A27D3F;
+    background-color:#1A212D;
     @apply
     w-90 h-15
-    bg-transparent border-2
-    rounded-r-full
+    border-2
+    rounded-full
     flex items-center justify-center
     text-gray-300 text-xl font-medium
+    hover:bg-stone-800
+    hover:border-amber-400
+    transition duration-200 ease-in-out
+    cursor-pointer
+    
 }
 
 .bg-waves {
