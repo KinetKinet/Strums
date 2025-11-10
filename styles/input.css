@@ -1,15 +1,19 @@
 @import "tailwindcss";
 
 .button {
-    @apply 
-    w-90 h-20
-    bg-[#503d1c]
+    border-color:#A27D3F;
+    @apply
+    w-90 h-15
+    bg-transparent border-2
     rounded-r-full
     flex items-center justify-center
-    text-white text-xl font-medium
+    text-gray-300 text-xl font-medium
 }
 
-.bg-color {
-    @apply 
-    bg-[#a57f40]
+.bg-waves {
+  background-image: url('/assets/images/waves.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color:#1A212D
 }
