@@ -12,8 +12,11 @@
     hover:bg-stone-800
     hover:border-amber-400
     transition duration-200 ease-in-out
-    cursor-pointer
-    
+    cursor-pointer   
+}
+
+.button:active {
+    background-color:#ffffff;
 }
 
 .bg-waves {

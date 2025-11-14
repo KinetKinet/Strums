@@ -227,9 +227,6 @@
       margin-block-end: calc(calc(var(--spacing) * 8) * calc(1 - var(--tw-space-y-reverse)));
     }
   }
-  .bg-amber-300 {
-    background-color: var(--color-amber-300);
-  }
   .pt-20 {
     padding-top: calc(var(--spacing) * 20);
   }
