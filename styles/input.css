@@ -2,8 +2,8 @@
 
 .button { /* button customization */
     border-color:#50AAE7;
-    --text-color: #fffcfc; /* not working */
-    /* background-color:#1A212D; */
+
+    /* Tailwind */
     @apply
     w-90 h-15
     border-2
@@ -15,33 +15,28 @@
     transition duration-200 ease-in-out
     cursor-pointer  
 }
-/*
-.bg-waves {
-  background-image: url('../assets/images/waves.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color:#1A212D;
-} */
 
-:root {
+body {
     --bg-color: #BBE1F4;
     --text-color: #0b47a0;
     --button-bg: #f0f0f0;
-    background-image: url('../assets/images/layered-waves-haikei.png');
-    background-position: center;
-}
 
-body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.5s, color 0.1s; /* transition */
+    transition: background-color 0.9s, color 0.5s, opacity 0.9s ease; /* transition */
+
+    background-image: url('../assets/images/layered-waves-haikei.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
 }
 /* Dark mode styles */
 body.dark-mode {
     --bg-color: #0f3241;
     --text-color: #fffcfc;
     --button-bg: #333333;
+
     background-image: url('../assets/images/layered-waves-haikei-dark.png');
     background-position: center;
     background-repeat: no-repeat;

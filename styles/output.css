@@ -279,9 +279,6 @@
   .rounded-lg {
     border-radius: var(--radius-lg);
   }
-  .bg-blue-400 {
-    background-color: var(--color-blue-400);
-  }
   .bg-transparent {
     background-color: transparent;
   }
@@ -350,7 +347,6 @@
 }
 .button {
   border-color: #50AAE7;
-  --text-color: #fffcfc;
   display: flex;
   height: calc(var(--spacing) * 15);
   width: calc(var(--spacing) * 90);
@@ -382,17 +378,17 @@
     }
   }
 }
-:root {
+body {
   --bg-color: #BBE1F4;
   --text-color: #0b47a0;
   --button-bg: #f0f0f0;
-  background-image: url('../assets/images/layered-waves-haikei.png');
-  background-position: center;
-}
-body {
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.5s, color 0.1s;
+  transition: background-color 0.9s, color 0.5s, opacity 0.9s ease;
+  background-image: url('../assets/images/layered-waves-haikei.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 body.dark-mode {
   --bg-color: #0f3241;
