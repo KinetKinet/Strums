@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,30 +7,33 @@
   <link rel="icon" href="./assets/images/strums-tab-icon.png"> <!-- Favicon -->
 </head>
 <title>Strums</title>
-<body class="bg-waves min-h-screen"> <!-- Background image applied here -->
+<!-- #123499 requested by sir larry (color of STRUMS logo and button logo)-->
+<body class="min-h-screen bg-blue-400"> <!-- Background image applied here -->
   <header class="flex items-center justify-center pt-20 pb-17">
-      <img src="./assets/images/strums-logo.png" alt="Strums" class="w-35 h-auto"> <!-- Logo image -->
+      <button id="theme-toggle" class="flex absolute top-6 right-6 ">Dark Mode</button>
+      <img src="./assets/images/strums-logo.png" alt="Strums" class="h-auto w-35"> <!-- Logo image -->
   </header>
 
-  <div class="flex flex-col space-y-8 items-center">
-    <a href="./pages/lessons.html" class="button relative flex items">
-      <img src="./assets/images/lessons-icon.png" alt="Lessons Icon" class="w-14 h-auto absolute left-10 mr-3">
+  <div class="flex flex-col items-center space-y-8">
+    <a href="./pages/lessons.html" class="relative flex button items">
+      <img src="./assets/images/lessons-icon.png" alt="Lessons Icon" class="absolute h-auto mr-3 w-14 left-10">
       <span class="inline-block">
       Lessons
       </span>
     </a>
-    <a href="./pages/chord-library.html" class="button relative flex items">
-      <img src="./assets/images/chord_-library-icon.png" alt="Lessons Icon" class="w-9 h-auto absolute left-12 mr-3">
+    <a href="./pages/chord-library.html" class="relative flex button items">
+      <img src="./assets/images/chord_-library-icon.png" alt="Lessons Icon" class="absolute h-auto mr-3 w-9 left-12">
       <span class="inline-block">
       Chord Library
       </span>
     </a>
-    <a href="./pages/assessment.html" class="button relative flex items">
-      <img src="./assets/images/assessment-icon.png" alt="Lessons Icon" class="w-10 h-auto absolute left-12 mr-3">
+    <a href="./pages/assessment.html" class="relative flex button items">
+      <img src="./assets/images/assessment-icon.png" alt="Lessons Icon" class="absolute w-10 h-auto mr-3 left-12">
       <span class="inline-block">
       Assessment
       </span>
     </a>
   </div>
+  <script src="./scripts/main.js"></script>
 </body>
 </html>

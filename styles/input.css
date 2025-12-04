@@ -1,28 +1,50 @@
 @import "tailwindcss";
 
-.button {
-    border-color:#A27D3F;
-    background-color:#1A212D;
+.button { /* button customization */
+    border-color:#50AAE7;
+    --text-color: #fffcfc; /* not working */
+    /* background-color:#1A212D; */
     @apply
     w-90 h-15
     border-2
     rounded-full
     flex items-center justify-center
-    text-gray-300 text-xl font-medium
-    hover:bg-stone-800
-    hover:border-amber-400
+    text-xl font-medium
+    hover:bg-blue-300
+    hover:border-amber-50
     transition duration-200 ease-in-out
-    cursor-pointer   
+    cursor-pointer  
 }
-
-.button:active {
-    background-color:#ffffff;
-}
-
+/*
 .bg-waves {
   background-image: url('../assets/images/waves.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-color:#1A212D;
+} */
+
+:root {
+    --bg-color: #BBE1F4;
+    --text-color: #0b47a0;
+    --button-bg: #f0f0f0;
+    background-image: url('../assets/images/layered-waves-haikei.png');
+    background-position: center;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.5s, color 0.1s; /* transition */
+}
+/* Dark mode styles */
+body.dark-mode {
+    --bg-color: #0f3241;
+    --text-color: #fffcfc;
+    --button-bg: #333333;
+    background-image: url('../assets/images/layered-waves-haikei-dark.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,4 +8,35 @@
 </head>
 <title>Chord Library</title>
 <body class="bg-waves min-h-screen"> <!-- Background image applied here -->
-<a href="../index.html" class="text-blue-400 underline">← Back</a>
+  <button id="theme-toggle" class="flex absolute top-6 right-6 ">Dark Mode</button>
+  <a href="../index.html" class="text-blue-400 underline">← Back</a>
+  <div class="flex flex-col items-center pt-10 pb-10 space-y-8">
+    <h1 class="text-4xl font-bold mb-6 text-blue-400">Chord Library</h1>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <!-- Example Chord Card -->
+      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
+        <img src="../assets/images/chords/C_major.png" alt="C Major Chord" class="mb-4 w-20 h-auto">
+        <h2 class="text-xl font-semibold mb-2">C Major</h2>
+        <p class="text-center">032010</p>
+      </div>
+      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
+        <img src="../assets/images/chords/G_major.png" alt="G Major Chord" class="mb-4 w-20 h-auto">
+        <h2 class="text-xl font-semibold mb-2">G Major</h2>
+        <p class="text-center">320003</p>
+      </div>
+      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
+        <img src="../assets/images/chords/D_major.png" alt="D Major Chord" class="mb-4 w-20 h-auto">
+        <h2 class="text-xl font-semibold mb-2">D Major</h2>
+        <p class="text-center">000232</p>
+      </div>
+      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
+        <img src="../assets/images/chords/E_minor.png" alt="E Minor Chord" class="mb-4 w-20 h-auto">
+        <h2 class="text-xl font-semibold mb-2">E Minor</h2>
+        <p class="text-center">022000</p>
+      </div>
+      <!-- Add more chord cards as needed -->
+    </div>
+  </div>
+  <script src="../scripts/main.js"></script>
+</body>
+</html>
