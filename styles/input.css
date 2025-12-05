@@ -23,23 +23,41 @@ body {
 
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.9s, color 0.5s, opacity 0.9s ease; /* transition */
+    transition: background-color 0.9s, color 0.5s ease; /* transition */
 
+    /* base bg (light mode) */
     background-image: url('../assets/images/layered-waves-haikei.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    
+
+    position: relative;
 }
+
+/* pseudo element for dark mode image, top layer */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* allow clicks to pass through */
+    background-image: url('../assets/images/layered-waves-haikei-dark.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.9s ease; /* smooth transition */
+}
+
 /* Dark mode styles */
 body.dark-mode {
     --bg-color: #0f3241;
     --text-color: #fffcfc;
     --button-bg: #333333;
+}
 
-    background-image: url('../assets/images/layered-waves-haikei-dark.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
+body.dark-mode::before {
+    opacity: 1; /* show dark mode background */
 }
