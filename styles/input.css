@@ -16,6 +16,10 @@
     cursor-pointer  
 }
 
+:root {
+  color-scheme: dark; /* if dark is your preference */
+}
+
 body {
     --bg-color: #BBE1F4;
     --text-color: #0b47a0;
@@ -52,12 +56,12 @@ body::before {
 }
 
 /* Dark mode styles */
-body.dark-mode {
+html.dark-mode body {
     --bg-color: #0f3241;
     --text-color: #fffcfc;
     --button-bg: #333333;
 }
 
-body.dark-mode::before {
+html.dark-mode body::before {
     opacity: 1; /* show dark mode background */
 }
