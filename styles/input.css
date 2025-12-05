@@ -64,4 +64,5 @@ html.dark-mode body {
 
 html.dark-mode body::before {
     opacity: 1; /* show dark mode background */
+    z-index: 0;
 }

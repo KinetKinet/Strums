@@ -416,6 +416,7 @@ html.dark-mode body {
 }
 html.dark-mode body::before {
   opacity: 1;
+  z-index: 0;
 }
 @property --tw-space-y-reverse {
   syntax: "*";
