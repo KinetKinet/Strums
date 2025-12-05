@@ -393,6 +393,7 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+  z-index: 0;
 }
 body::before {
   content: "";
@@ -408,6 +409,7 @@ body::before {
   background-size: cover;
   opacity: 0;
   transition: opacity 0.9s ease;
+  z-index: -1;
 }
 html.dark-mode body {
   --bg-color: #0f3241;
@@ -416,7 +418,6 @@ html.dark-mode body {
 }
 html.dark-mode body::before {
   opacity: 1;
-  z-index: 0;
 }
 @property --tw-space-y-reverse {
   syntax: "*";
