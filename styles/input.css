@@ -1,70 +1,57 @@
 @import "tailwindcss";
 
 .button { /* button customization */
-    border-color:#50AAE7;
+    border-color:#906050;
 
     /* Tailwind */
     @apply
     w-90 h-15
-    border-2
+    border-3
     rounded-full
     flex items-center justify-center
     text-xl font-medium
-    hover:bg-blue-300
-    hover:border-amber-50
+    transform hover:scale-105
     transition duration-200 ease-in-out
     cursor-pointer  
 }
 
-:root {
-  color-scheme: dark; /* if dark is your preference */
-}
-
 body {
-    --bg-color: #BBE1F4;
-    --text-color: #0b47a0;
-    --button-bg: #f0f0f0;
-
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color 0.9s, color 0.5s ease; /* transition */
-
-    /* base bg (light mode) */
-    background-image: url('../assets/images/layered-waves-haikei.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
     position: relative;
-    z-index: 0;
+    color: var(--text-color);
+    transition: color 0.5s ease;
 }
 
-/* pseudo element for dark mode image, top layer */
-body::before {
-    content: "";
-    position: absolute;
+body::before,
+body::after {
+    content: '';
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* allow clicks to pass through */
-
-    background-image: url('../assets/images/layered-waves-haikei-dark.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    opacity: 0;
-    transition: opacity 0.9s ease; /* smooth transition */
     z-index: -1;
+    transition: opacity 0.9s ease;
+}
+/* LIGHT MODE */
+body::before {
+    background-color: #E8DCC4;
+    opacity: 1;
 }
 
-/* Dark mode styles */
+body::after {
+    background-color: #3E2723;
+    opacity: 0;
+}
+/* DARK MODE */
+html.dark-mode body::before {
+    opacity: 0;
+}
+
+html.dark-mode body::after {
+    opacity: 1;
+}
+
 html.dark-mode body {
-    --bg-color: #0f3241;
     --text-color: #fffcfc;
     --button-bg: #333333;
-}
-
-html.dark-mode body::before {
-    opacity: 1; /* show dark mode background */
 }

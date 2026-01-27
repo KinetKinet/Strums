@@ -7,8 +7,6 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    --color-amber-50: oklch(98.7% 0.022 95.277);
-    --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-gray-700: oklch(37.3% 0.034 259.733);
     --spacing: 0.25rem;
@@ -346,16 +344,17 @@
   }
 }
 .button {
-  border-color: #50AAE7;
+  border-color: #906050;
   display: flex;
   height: calc(var(--spacing) * 15);
   width: calc(var(--spacing) * 90);
+  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   cursor: pointer;
   align-items: center;
   justify-content: center;
   border-radius: calc(infinity * 1px);
   border-style: var(--tw-border-style);
-  border-width: 2px;
+  border-width: 3px;
   font-size: var(--text-xl);
   line-height: var(--tw-leading, var(--text-xl--line-height));
   --tw-font-weight: var(--font-weight-medium);
@@ -369,55 +368,45 @@
   transition-timing-function: var(--ease-in-out);
   &:hover {
     @media (hover: hover) {
-      border-color: var(--color-amber-50);
+      --tw-scale-x: 105%;
+      --tw-scale-y: 105%;
+      --tw-scale-z: 105%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
     }
   }
-  &:hover {
-    @media (hover: hover) {
-      background-color: var(--color-blue-300);
-    }
-  }
-}
-:root {
-  color-scheme: dark;
 }
 body {
-  --bg-color: #BBE1F4;
-  --text-color: #0b47a0;
-  --button-bg: #f0f0f0;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.9s, color 0.5s ease;
-  background-image: url('../assets/images/layered-waves-haikei.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   position: relative;
-  z-index: 0;
+  color: var(--text-color);
+  transition: color 0.5s ease;
 }
-body::before {
-  content: "";
-  position: absolute;
+body::before, body::after {
+  content: '';
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  background-image: url('../assets/images/layered-waves-haikei-dark.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  opacity: 0;
-  transition: opacity 0.9s ease;
   z-index: -1;
+  transition: opacity 0.9s ease;
 }
-html.dark-mode body {
-  --bg-color: #0f3241;
-  --text-color: #fffcfc;
-  --button-bg: #333333;
+body::before {
+  background-color: #E8DCC4;
+  opacity: 1;
+}
+body::after {
+  background-color: #3E2723;
+  opacity: 0;
 }
 html.dark-mode body::before {
+  opacity: 0;
+}
+html.dark-mode body::after {
   opacity: 1;
+}
+html.dark-mode body {
+  --text-color: #fffcfc;
+  --button-bg: #333333;
 }
 @property --tw-space-y-reverse {
   syntax: "*";
@@ -493,6 +482,26 @@ html.dark-mode body::before {
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
@@ -505,6 +514,21 @@ html.dark-mode body::before {
 @property --tw-ease {
   syntax: "*";
   inherits: false;
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
 }
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
@@ -525,9 +549,17 @@ html.dark-mode body::before {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
       --tw-border-style: solid;
       --tw-duration: initial;
       --tw-ease: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
     }
   }
 }
