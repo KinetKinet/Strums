@@ -37,12 +37,12 @@ body::before {
     background-color: #E8DCC4;
     opacity: 1;
 }
-
+/* DARK MODE */
 body::after {
-    background-color: #3E2723;
+    background-color: #513833;
     opacity: 0;
 }
-/* DARK MODE */
+
 html.dark-mode body::before {
     opacity: 0;
 }
