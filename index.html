@@ -5,30 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Strums</title>
 
+  <!-- JS  -->
   <script>
    if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark-mode');
   }
   </script>
 
-  <link href="./styles/output.css" rel="stylesheet">
+  <!-- CSS -->
+  <link href="./dist/output.css" rel="stylesheet">
   <link rel="icon" href="./assets/images/strums-tab-icon.png"> <!-- Favicon -->
 
-  <script src="./scripts/main.js" defer></script>
+  <script type="module" src="./scripts/main.js" defer></script>
 </head>
 
-<body class="min-h-screen box"> <!-- header applied here -->
+<body class="min-h-screen box">
   <header class="flex items-center justify-center pt-20 pb-5">
       <button id="theme-toggle" class="flex absolute top-7 right-6 ">Dark Mode</button>
-      <img src="./assets/images/strums-logo.png" alt="Strums" class="h-auto w-35"> 
+      <img src="./assets/images/strums-logo.png" alt="Strums" class="h-auto w-35">
   </header>
 
   <h1 class="flex items-center justify-center text-2xl ">Learn Guitar the Easy Way</h1>
   
-  <!-- Background Image -->
-  <!-- <img src="./assets/images/GuitarNoBG.png" class="sm:invisible md:invisible lg:visible absolute z-0 h-auto w-190 top-80 left-30 opacity-5 -rotate-90" alt="Guitar Background"> -->
-  <img src="./assets/images/GuitarWithHandsBG.png" class="absolute z-0 h-auto w-160 top-60 right-20 opacity-60" alt="Guitar Background with Hands">
- 
+  <!-- Button alignment -->
   <div class="flex flex-col items-center space-y-10 pt-20">
     
     <a href="./pages/lessons.html" class="relative flex button items">
@@ -51,10 +50,11 @@
       Assessment
       </span>
     </a>
-     <img src="./assets/images/CoffeeBG.png" class="invisible lg:visible flex relative z-0 h-auto w-90 bottom-57 right-80 opacity-50 rotate-90">
-  
   </div>
-<footer class="flex items-center justify-center pt-10 pb-7">
-  <p class="text-sm opacity-50 z-1"> Made for Beginners &#0149; Strums v1.0</p>
+
+  <footer class="flex items-center justify-center relative mt-55 mb-10">
+    <p class="text-sm opacity-60"> Made for Beginners &#0149; Strums v1.0</p>
+  </footer>
+
 </body>
 </html>

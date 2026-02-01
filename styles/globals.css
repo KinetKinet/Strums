@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* import other css files */
+@import "./theme.css";
+@import "./chord-library.css";
+

@@ -1,20 +1,5 @@
 @import "tailwindcss";
 
-.button { /* button customization */
-    border-color:#906050;
-
-    /* Tailwind */
-    @apply
-    w-90 h-15
-    border-3
-    rounded-full
-    flex items-center justify-center
-    text-xl font-medium
-    transform hover:scale-105
-    transition duration-200 ease-in-out
-    cursor-pointer  
-}
-
 body {
     position: relative;
     color: var(--text-color);
@@ -32,6 +17,7 @@ body::after {
     z-index: -1;
     transition: opacity 0.9s ease;
 }
+
 /* LIGHT MODE */
 body::before {
     background-color: #E8DCC4;
