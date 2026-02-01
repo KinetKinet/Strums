@@ -5,16 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chord Library</title>
 
+  <!-- JS -->
   <script>
    if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark-mode');
   }
   </script>
   
+  <!-- CSS -->
   <link href="../dist/output.css" rel="stylesheet">
   <link rel="icon" href="../assets/images/strums-tab-icon.png"> <!-- Favicon -->
 
-  <script src="../scripts/main.js" defer></script>
+  <script type="module" src="../scripts/main.js" defer></script>
 </head>
 
 <body class="min-h-screen">
@@ -22,36 +24,47 @@
 
   <a href="../index.html" class="text-blue-400 underline">← Back</a>
 
-  <div class="flex flex-col items-center pt-10 pb-10 space-y-8">
-    <h1 class="text-4xl font-bold mb-6">Chord Library</h1>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-      <!-- Example Chord Card -->
-      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
-        <img src="../assets/images/C-Major.png" alt="C Major Chord" class="mb-4 w-20 h-auto">
-        <h2 class="text-xl font-semibold mb-2">C Major</h2>
-        <p class="text-center">032010</p>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-title">
+        <h1>🎵 Chord Library</h1>
       </div>
+      <p class="header-subtitle">Slide to explore different chord combinations</p>
+    </div>
 
-      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
-        <img src="../assets/images/chords/G_major.png" alt="G Major Chord" class="mb-4 w-20 h-auto">
-        <h2 class="text-xl font-semibold mb-2">G Major</h2>
-        <p class="text-center">320003</p>
+    <!-- Current Chord Display -->
+    <div class="current-chord">
+      <h2 id="currentChordName">C Major</h2>
+      <p>Current Selection</p>
+    </div>
+
+    <!-- Root Notes Slider -->
+    <div class="slider-section">
+      <label class="slider-label">Root Note</label>
+      <div class="slider-container">
+        <div class="slider-scroll">
+          <div class="slider-buttons" id="rootButtons"></div>
+        </div>
       </div>
+    </div>
 
-      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
-        <img src="../assets/images/chords/D_major.png" alt="D Major Chord" class="mb-4 w-20 h-auto">
-        <h2 class="text-xl font-semibold mb-2">D Major</h2>
-        <p class="text-center">000232</p>
+    <!-- Chord Types Slider -->
+    <div class="slider-section">
+      <label class="slider-label">Chord Type</label>
+      <div class="slider-container">
+        <div class="slider-scroll">
+          <div class="slider-buttons" id="typeButtons"></div>
+        </div>
       </div>
+    </div>
 
-      <div class="bg-transparent rounded-lg shadow-lg p-4 w-40 flex flex-col items-center">
-        <img src="../assets/images/chords/E_minor.png" alt="E Minor Chord" class="mb-4 w-20 h-auto">
-        <h2 class="text-xl font-semibold mb-2">E Minor</h2>
-        <p class="text-center">022000</p>
-      </div> <!-- add chords here-->
-    </div> 
-  </div> 
+    <!-- Chord Diagram -->
+    <div class="chord-diagram-container">
+      <h3 class="diagram-title">Chord Diagram</h3>
+      <div id="chordDiagram"></div>
+    </div>
+  </div>
 
 </body>
 </html>

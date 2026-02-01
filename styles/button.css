@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.button { /* button customization */
+.button {
     border-color:#906050;
 
     /* Tailwind */
