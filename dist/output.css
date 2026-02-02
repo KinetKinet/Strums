@@ -7,6 +7,10 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-amber-200: oklch(92.4% 0.12 95.746);
+    --color-amber-900: oklch(41.4% 0.112 45.904);
+    --color-green-800: oklch(44.8% 0.119 151.328);
+    --color-green-900: oklch(39.3% 0.095 152.535);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-gray-700: oklch(37.3% 0.034 259.733);
     --spacing: 0.25rem;
@@ -21,6 +25,7 @@
     --text-2xl--line-height: calc(2 / 1.5);
     --font-weight-medium: 500;
     --font-weight-bold: 700;
+    --radius-lg: 0.5rem;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -666,7 +671,6 @@ html.dark-mode body {
   display: flex;
   height: calc(var(--spacing) * 15);
   width: calc(var(--spacing) * 90);
-  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -680,16 +684,37 @@ html.dark-mode body {
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
-  --tw-duration: 200ms;
-  transition-duration: 200ms;
+  --tw-duration: 40ms;
+  transition-duration: 40ms;
   --tw-ease: var(--ease-in-out);
   transition-timing-function: var(--ease-in-out);
+}
+.button:hover {
+  --tw-scale-x: 105%;
+  --tw-scale-y: 105%;
+  --tw-scale-z: 105%;
+  scale: var(--tw-scale-x) var(--tw-scale-y);
+  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  --tw-duration: 300ms;
+  transition-duration: 300ms;
+}
+.back-button {
+  position: absolute;
+  top: calc(var(--spacing) * 2);
+  left: calc(var(--spacing) * 2);
+  border-radius: var(--radius-lg);
+  border-style: var(--tw-border-style);
+  border-width: 3px;
+  border-color: var(--color-amber-900);
+  background-color: var(--color-green-900);
+  padding-top: calc(var(--spacing) * 2);
+  padding-right: calc(var(--spacing) * 4);
+  padding-bottom: calc(var(--spacing) * 2);
+  padding-left: calc(var(--spacing) * 4);
+  color: var(--color-amber-200);
   &:hover {
     @media (hover: hover) {
-      --tw-scale-x: 105%;
-      --tw-scale-y: 105%;
-      --tw-scale-z: 105%;
-      scale: var(--tw-scale-x) var(--tw-scale-y);
+      background-color: var(--color-green-800);
     }
   }
 }
@@ -867,29 +892,22 @@ html.dark-mode body {
   font-size: 1.125rem;
 }
 .current-chord {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
   text-align: center;
-  border: 1px solid rgba(192, 132, 252, 0.3);
+  border: 3px solid #906050;
 }
 .current-chord h2 {
   font-size: 2.5rem;
   font-weight: bold;
-  color: white;
   margin-bottom: 0.5rem;
-}
-.current-chord p {
-  color: #d8b4fe;
 }
 .slider-section {
   margin-bottom: 2rem;
 }
 .slider-label {
   display: block;
-  color: #d8b4fe;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
@@ -897,11 +915,10 @@ html.dark-mode body {
   letter-spacing: 0.05em;
 }
 .slider-container {
-  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
   border-radius: 0.75rem;
   padding: 1rem;
-  border: 1px solid rgba(192, 132, 252, 0.2);
+  border: 3px solid #906050;
 }
 .slider-scroll {
   overflow-x: auto;
@@ -911,11 +928,11 @@ html.dark-mode body {
   height: 8px;
 }
 .slider-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: #1e8f49;
   border-radius: 4px;
 }
 .slider-scroll::-webkit-scrollbar-thumb {
-  background: rgba(192, 132, 252, 0.5);
+  background: #1e8f49;
   border-radius: 4px;
 }
 .slider-buttons {
@@ -930,28 +947,26 @@ html.dark-mode body {
   font-size: 1.125rem;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.5s;
   background: rgba(255, 255, 255, 0.1);
-  color: #d8b4fe;
   white-space: nowrap;
 }
 .slider-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 .slider-btn.active-root {
-  background: #a855f7;
+  background: #885543;
   color: white;
-  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.5);
-  transform: scale(1.05);
+  box-shadow: 0 10px 25px #724737;
+  transform: scale(1);
 }
 .slider-btn.active-type {
-  background: #ec4899;
+  background: #885543;
   color: white;
-  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.5);
-  transform: scale(1.05);
+  box-shadow: 0 10px 25px #724737;
+  transform: scale(1.09);
 }
 .chord-diagram-container {
-  background: linear-gradient(to bottom right, #fffbeb, #fed7aa);
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
@@ -959,7 +974,6 @@ html.dark-mode body {
 .diagram-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1e293b;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -977,11 +991,11 @@ html.dark-mode body {
   padding: 0 0.25rem;
 }
 .string-label {
-  width: 3rem;
+  width: 4rem;
+  padding-bottom: 1rem;
   text-align: center;
   font-size: 0.875rem;
   font-weight: bold;
-  color: #334155;
 }
 .fretboard {
   background: #92400e;
@@ -1041,7 +1055,7 @@ html.dark-mode body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #16a34a;
+  color: #000000;
   font-size: 0.75rem;
   font-weight: bold;
 }
@@ -1079,7 +1093,7 @@ html.dark-mode body {
 .legend-dot-open {
   width: 1rem;
   height: 1rem;
-  border: 2px solid #16a34a;
+  border: 2px solid #000000;
   border-radius: 50%;
   background: white;
 }
@@ -1175,26 +1189,6 @@ html.dark-mode body {
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-rotate-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-y {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-rotate-z {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-x {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-skew-y {
-  syntax: "*";
-  inherits: false;
-}
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
@@ -1223,6 +1217,26 @@ html.dark-mode body {
   inherits: false;
   initial-value: 1;
 }
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -1242,17 +1256,17 @@ html.dark-mode body {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-rotate-x: initial;
-      --tw-rotate-y: initial;
-      --tw-rotate-z: initial;
-      --tw-skew-x: initial;
-      --tw-skew-y: initial;
       --tw-border-style: solid;
       --tw-duration: initial;
       --tw-ease: initial;
       --tw-scale-x: 1;
       --tw-scale-y: 1;
       --tw-scale-z: 1;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
     }
   }
 }

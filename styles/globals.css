@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 /* CSS entry point  */
-
 /* import other css files */
 @import "./theme.css";
 @import "./button.css";

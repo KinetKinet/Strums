@@ -10,7 +10,27 @@
     rounded-full
     flex items-center justify-center
     text-xl font-medium
-    transform hover:scale-105
-    transition duration-200 ease-in-out
+    transition 
+    duration-40
+    ease-in-out
     cursor-pointer  
 }
+
+.button:hover {
+    @apply
+    transform
+    duration-300
+    scale-105;
+}
+
+.back-button {
+    @apply
+    absolute top-2 left-2
+    text-amber-200
+    hover:bg-green-800
+    bg-green-900 border-3
+    border-amber-900
+    pt-2 pb-2 pl-4 pr-4
+    rounded-lg
+}
+/* bg-green-900 border-3 border-amber-900 pt-2 pb-2 pl-4 pr-4 rounded-lg */
