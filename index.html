@@ -6,54 +6,50 @@
   <title>Strums</title>
 
   <!-- JS  -->
-  <script>
-   if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark-mode');
-  }
-  </script>
+  <script type="module" src="./scripts/main.js" defer></script>
 
   <!-- CSS -->
   <link href="./dist/output.css" rel="stylesheet">
   <link rel="icon" href="./assets/images/strums-tab-icon.png"> <!-- Favicon -->
 
-  <script type="module" src="./scripts/main.js" defer></script>
 </head>
 
-<body class="min-h-screen box">
-  <header class="flex items-center justify-center pt-20 pb-5">
-      <button id="theme-toggle" class="flex absolute top-7 right-6 ">Dark Mode</button>
-      <img src="./assets/images/strums-logo.png" alt="Strums" class="h-auto w-35">
+<body class="min-h-screen bg-main">
+  <header class="logo">
+    Strums
   </header>
 
-  <h1 class="flex items-center justify-center text-2xl ">Learn Guitar the Easy Way</h1>
+  <h1 class="tagline">
+    Learn Guitar the Easy Way
+  </h1>
   
   <!-- Button alignment -->
   <div class="flex flex-col items-center space-y-10 pt-20">
     
     <a href="./pages/lessons.html" class="relative flex button items">
       <img src="./assets/images/lessons-icon.png" alt="Lessons Icon" class="absolute h-auto mr-3 w-14 left-10">
-      <span class="inline-block">
+      <span class="inline-block text-white drop-shadow-[0_0px_2px_rgba(0,0,0,1)]">
       Lessons
       </span>
     </a>
     
     <a href="./pages/chord-library.html" class="relative flex button items">
       <img src="./assets/images/chord_-library-icon.png" alt="Lessons Icon" class="absolute h-auto mr-3 w-9 left-12">
-      <span class="inline-block">
+      <span class="inline-block text-white drop-shadow-[0_0px_2px_rgba(0,0,0,1)]">
       Chord Library
       </span>
     </a>
 
     <a href="./pages/assessment.html" class="relative flex button items">
       <img src="./assets/images/assessment-icon.png" alt="Lessons Icon" class="absolute w-10 h-auto mr-3 left-12">
-      <span class="inline-block">
+      <span class="inline-block text-white drop-shadow-[0_0px_2px_rgba(0,0,0,1)]">
       Assessment
       </span>
     </a>
   </div>
 
-  <footer class="flex items-center justify-center relative mt-55 mb-10">
-    <p class="text-sm opacity-60"> Made for Beginners &#0149; Strums v1.0</p>
+  <footer class="foot">
+    <p class=""> Made for Beginners &#0149; Strums v1.0</p>
   </footer>
 
 </body>

@@ -2,6 +2,63 @@
 
 /* CSS entry point  */
 /* import other css files */
-@import "./theme.css";
 @import "./button.css";
 @import "./chord-library.css";
+
+html,
+body {
+    overscroll-behavior: none;
+    margin: 0;
+}
+
+.logo {
+    @apply
+    font-serif
+    flex
+    items-center
+    justify-center
+    pt-10 pb-10
+    uppercase;
+
+    font-weight: bold;
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+    text-shadow: #000000 0px 2px 15px;
+    color:#fff;
+}
+
+.tagline {
+    @apply
+    flex
+    items-center 
+    justify-center 
+    text-2xl 
+    font-bold 
+    drop-shadow-[0_2px_2px_rgba(0,0,0,1)];
+
+    color:#eeeae3;
+}
+
+.bg-main {
+    background-image: url('../assets/images/BG-main.jpg');
+    background-attachment: fixed;
+
+    @apply
+    bg-cover
+    bg-center
+    bg-no-repeat
+    min-h-screen
+}
+
+.foot {
+    @apply
+    flex
+    items-center
+    justify-center
+    relative
+    mt-50 mb-10
+    text-sm
+    opacity-75
+    text-white
+    drop-shadow-[0_2px_2px_rgba(0,0,0,1)]
+}
