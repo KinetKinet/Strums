@@ -1,36 +1,46 @@
 @import "tailwindcss";
 
-.button {
-    border-color:#906050;
-    background-color:#E9D4B5;
-    color:#000000;
-    /* Tailwind */
+.button { 
+    /* #906050 */
+    border-color:#52452b;
+    background-color: #e9b348;
+    color: #ffffff;
+
     @apply
+    relative
     w-90 h-15
-    border-3
+    border-6
     rounded-full
     flex items-center justify-center
-    text-xl font-medium
+    text-2xl font-bold
     transition 
     duration-40
     ease-in-out
     cursor-pointer
+    transform
+    duration-300
+    scale-100
 }
 
 .button:hover {
     @apply
     transform
     duration-300
-    scale-105
+    scale-110;
+
+    background-color:rgb(192, 140, 20)
 }
 
 .back-button {
     @apply
-    absolute top-2 left-2
+    cursor-pointer
     text-amber-100
     hover:bg-green-800
     bg-green-900 border-3
     border-amber-900
     pt-2 pb-2 pl-4 pr-4
+    mt-1 mb-1 mr-5
     rounded-lg
+    font-bold
+    text-shadow-lg
 }

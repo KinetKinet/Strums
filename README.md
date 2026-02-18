@@ -1,3 +1,4 @@
-
-Reminder:
-## Fix the FRET NUMBERS
+## Reminder:
+Fix the FRET NUMBERS
+Change color
+Resize font

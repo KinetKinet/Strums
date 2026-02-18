@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+.header-strums {
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 16px; }
+
+.strums-logo {
+    font-family: Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: bold;;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px;
+    background: #e8b270;
+    border: 3px solid #9D6630;
+    border-radius: 8px;
+}
+
+.hamburger span {
+    width: 22px; height: 4px;
+    background: #9D6630;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+/* LAYOUT */
+.layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: #0a05005f;
+    border-right: 1px solid #E9B348;
+    padding: 24px 16px;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-title {
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    margin-bottom: 16px;
+    padding-left: 12px;
+}
+
+.chapter-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #ffffff;
+    padding: 14px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+    position: relative;
+}
+.chapter-btn.active {
+    background: #e9b34828;
+    color: #f7c053;
+    font-weight: 600;
+}
+.chapter-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    background: #E9B348;
+    border-radius: 0 3px 3px 0;
+}
+
+.chapter-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #E9B34826;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    color: #E9B348;
+}
+.chapter-btn.active .chapter-num { background: #E9B348; color: #2e240f; }
+
+/* OVERLAY */
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 50;
+}
+.overlay.show { display: block; }
+
+/* MAIN CONTENT */
+.main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+}
+
+.lesson-panel {
+    display: none;
+    animation: fadeSlide 0.35s ease;
+}
+.lesson-panel.active { display: block; }
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.lesson-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #E9B34833;
+}
+
+.lesson-tag {
+    font-size: 1.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #E9B348;
+    margin-bottom: 8px;
+}
+
+.lesson-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 8px;
+    text-shadow: #000000 0px 0px 10px;
+}
+
+.lesson-desc {
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-shadow: #000000 0px 0px 5px;
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.info-card {
+    background: #0a05005f;
+    backdrop-filter: blur(12px);
+    border: 3px solid #E9B348;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.info-card h4 { color: #f7c053; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.info-card p { color: #fff; font-size: 0.95rem; line-height: 1.6; }
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 28px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #f7c05377;
+}
+
+.tip-box {
+    background: #0a05005f;
+    backdrop-filter: blur(12px);
+    border-left: 3px solid #f7c053;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    color: #fff;
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+.step-list { list-style: none; }
+.step-list li {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ffffff0d;
+    color: #fff;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    align-items: flex-start;
+}
+.step-num {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #f7c053;
+    color: #000000;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.chord-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.chord-card {
+    background: #0a05005f;
+    backdrop-filter: blur(12px);
+    border: 3px solid #E9B348;
+    border-radius: 14px;
+    padding: 18px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.chord-card:hover { background: #e9b34846; border-color: #E9B348; transform: translateY(-2px); }
+.chord-name { font-size: 1.4rem; font-weight: bold; color: #E9B348; margin-bottom: 6px; }
+.chord-hint { font-size: 0.78rem; color: #fff; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .sidebar {
+    position: fixed;
+    top: 57px; left: 5; bottom: 0;
+    z-index: 60;
+    transform: translateX(-100%);
+    background: #0a0500e2;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { padding: 24px 20px; }
+    .lesson-title { font-size: 1.5rem; }
+}

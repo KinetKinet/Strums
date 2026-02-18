@@ -5,40 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chord Library</title>
 
-  <!-- JS -->
-  <script>
-   if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark-mode');
-  }
-  </script>
+  <!-- JS  -->
+  <script type="module" src="../scripts/main.js" defer></script>
   
   <!-- CSS -->
   <link href="../dist/output.css" rel="stylesheet">
   <link rel="icon" href="../assets/images/strums-tab-icon.png"> <!-- Favicon -->
 
-  <script type="module" src="../scripts/main.js" defer></script>
 </head>
 
-<body class="min-h-screen bg-main">
-
-  <a href="../index.html" class="back-button">Back</a>
-
+<body class="CL-page bg-main">
+<div class="header-strums">
+    <div class="header-left">
+      <a href="../index.html" class="back-button">Back</a>
+      <span class="strums-logo">Strums</span>
+    </div>
+</div>
   <div class="container">
-    <!-- Header -->
-    <div class="header">
+    <div class="CL-header">
       <div class="header-title">
         <h1>Chord Library</h1>
       </div>
       <p class="header-subtitle">Slide to explore different chord combinations</p>
     </div>
 
-    <!-- Current Chord Display -->
+    <!-- Current chord display -->
     <div class="current-chord">
       <h2 id="currentChordName">C Major</h2>
       <p>Current Selection</p>
     </div>
 
-    <!-- Root Notes Slider -->
+    <!-- Root notes slider -->
     <div class="slider-section">
       <label class="slider-label">Root Note</label>
       <div class="slider-container">
@@ -48,7 +45,7 @@
       </div>
     </div>
 
-    <!-- Chord Types Slider -->
+    <!-- chord types slider -->
     <div class="slider-section">
       <label class="slider-label">Chord Type</label>
       <div class="slider-container">
@@ -58,7 +55,7 @@
       </div>
     </div>
 
-    <!-- Chord Diagram -->
+    <!-- chord diagram -->
     <div class="chord-diagram-container">
       <h3 class="diagram-title">Chord Diagram</h3>
       <div id="chordDiagram"></div>

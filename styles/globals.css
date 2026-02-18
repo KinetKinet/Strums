@@ -3,40 +3,21 @@
 /* CSS entry point  */
 /* import other css files */
 @import "./button.css";
+@import "./lessons.css";
 @import "./chord-library.css";
+
+*,
+*::before,
+*::after { 
+    box-sizing: border-box;
+}
 
 html,
 body {
     overscroll-behavior: none;
     margin: 0;
-}
-
-.logo {
-    @apply
-    font-serif
-    flex
-    items-center
-    justify-center
-    pt-10 pb-10
-    uppercase;
-
-    font-weight: bold;
-    font-size: 3rem;
-    letter-spacing: 0.1em;
-    text-shadow: #000000 0px 2px 15px;
-    color:#fff;
-}
-
-.tagline {
-    @apply
-    flex
-    items-center 
-    justify-center 
-    text-2xl 
-    font-bold 
-    drop-shadow-[0_2px_2px_rgba(0,0,0,1)];
-
-    color:#eeeae3;
+    padding: 0;
+    height: auto;
 }
 
 .bg-main {
@@ -50,13 +31,42 @@ body {
     min-h-screen
 }
 
+.logo {
+    @apply
+    font-serif
+    flex
+    items-center
+    justify-center
+    pt-1 pb-1
+    uppercase;
+
+    font-weight: bold;
+    font-size: 5rem;
+    letter-spacing: 0.1em;
+    text-shadow: #000000 0px 0px 10px;
+    color:#ffffff;
+}
+
+.tagline {
+    @apply
+    mb-9
+    flex
+    items-center 
+    justify-center 
+    text-2xl
+    font-bold;
+
+    color:#ffffff;
+    text-shadow: #000000 0px 0px 5px;
+}
+
 .foot {
     @apply
     flex
     items-center
     justify-center
     relative
-    mt-50 mb-10
+    mt-30 mb-5
     text-sm
     opacity-75
     text-white

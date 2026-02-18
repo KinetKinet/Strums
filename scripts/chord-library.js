@@ -73,7 +73,14 @@
             <div class="string-labels">
               ${strings.map(s => `<div class="string-label">${s}</div>`).join('')}
             </div>
-            <div class="fretboard">
+            <div class="fretboard-container">
+              <div class="fret-numbers">
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+              </div>
+              <div class="fretboard">
       `;
 
       for (let fret = 0; fret <= 4; fret++) {
@@ -104,16 +111,10 @@
       }
 
       html += `
-            </div>
-            <div style="display: flex; justify-content: flex-end; margin-top: 0.5rem; padding-right: 0.25rem;">
-              <div class="fret-numbers">
-                <div>1</div>
-                <div>2</div>
-                <div>3</div>
-                <div>4</div>
-                <div>5</div>
               </div>
             </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: .5rem; padding-right: 0.25rem;">
+            </div>  
             <div class="legend">
               <div class="legend-item">
                 <div class="legend-dot-open"></div>
@@ -201,7 +202,6 @@
       });
     }
 
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
       initializeRootButtons();
       initializeTypeButtons();
