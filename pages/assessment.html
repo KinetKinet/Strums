@@ -12,14 +12,78 @@
   </script>
   
   <link href="../dist/output.css" rel="stylesheet">
+  <link href="../styles/assessment.css" rel="stylesheet">
   <link rel="icon" href="../assets/images/strums-tab-icon.png"> <!-- Favicon -->
 
   <script src="../scripts/main.js" defer></script>
+  <script type="module" src="../scripts/assessment.js" defer></script>
 </head>
 
 <body class="min-h-screen bg-main">
 
-  <a href="../index.html" class="back-button">Back</a>
-  
+  <div class="assessment-header">
+    <a href="../index.html" class="back-button">Back</a>
+    <h1>Assessment</h1>
+  </div>
+
+  <div class="assessment-container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+      <div class="start-content">
+        <h2>Assessment</h2>
+        <p>Test your knowledge by identifying chord diagrams! You'll be shown 4 random chords with multiple choice answers.</p>
+        <button id="startBtn" class="start-button">Start Assessment</button>
+      </div>
+    </div>
+
+    <!-- Assessment Screen -->
+    <div id="assessmentScreen" class="screen">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <p class="progress-text">Question <span id="currentQuestion">1</span>/4</p>
+
+      <div class="assessment-content">
+        <!-- Chord Diagram Display -->
+        <div class="diagram-section">
+          <h3>What chord is this?</h3>
+          <div id="assessmentDiagram" class="assessment-diagram"></div>
+        </div>
+
+        <!-- Multiple Choice Options -->
+        <div class="options-section">
+          <div class="options-grid">
+            <button class="option-btn" data-index="0"></button>
+            <button class="option-btn" data-index="1"></button>
+            <button class="option-btn" data-index="2"></button>
+            <button class="option-btn" data-index="3"></button>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <div id="feedbackContainer" class="feedback-container"></div>
+      </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="screen">
+      <div class="results-content">
+        <h2>Assessment Complete!</h2>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Score</span>
+            <span id="scoreDisplay" class="stat-value">0/4</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Percentage</span>
+            <span id="percentageDisplay" class="stat-value">0%</span>
+          </div>
+        </div>
+        <p id="resultMessage" class="result-message"></p>
+        <button id="restartBtn" class="restart-button">Try Again</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

@@ -20,6 +20,26 @@ body {
     height: auto;
 }
 
+.header-strums {
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 16px; }
+
+.strums-logo {
+    font-family: Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: bold;;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+}
+
 .bg-main {
     background-image: url('../assets/images/BG-main.jpg');
     background-attachment: fixed;
