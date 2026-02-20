@@ -1,3 +1,4 @@
+
 const chordPatterns = {
   'C-Major': { frets: [0, 3, 2, 0, 1, 0], fingers: ['x', '3', '2', '0', '1', '0'] },
   'C-Minor': { frets: [-1, 3, 1, 0, 1, 3], fingers: ['x', '3', '1', '0', '1', '4'] },
