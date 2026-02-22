@@ -50,6 +50,30 @@ function getChordPattern(root, type) {
 
 function updateChordName() {
   document.getElementById('currentChordName').textContent = `${selectedRoot} ${selectedType}`;
+  setAudioSource();
+}
+
+// Audio handling: set audio src based on current selection and play
+function getAudioFilePath(root, type) {
+  const fileName = `${encodeURIComponent(root)}-${encodeURIComponent(type)}.mp3`;
+  return `../assets/audio/${fileName}`;
+}
+
+function setAudioSource() {
+  const audioEl = document.getElementById('chordAudio');
+  if (!audioEl) return;
+  audioEl.src = getAudioFilePath(selectedRoot, selectedType);
+}
+
+function playCurrentChord() {
+  const audioEl = document.getElementById('chordAudio');
+  if (!audioEl) return;
+  // refresh src in case selection changed
+  setAudioSource();
+  audioEl.currentTime = 0;
+  audioEl.play().catch(() => {
+    // ignore play errors (autoplay restrictions) — user can click again
+  });
 }
 
 function renderDiagram() {
@@ -205,4 +229,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeRootButtons();
   initializeTypeButtons();
   renderDiagram();
+  // ensure audio element has correct src for initial selection
+  setAudioSource();
+
+  const playBtn = document.getElementById('playChordBtn');
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      playCurrentChord();
+    });
+  }
 });

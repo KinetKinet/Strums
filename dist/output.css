@@ -1092,6 +1092,20 @@
   color: #fff;
   text-shadow: #000000 0px 0px 10px;
 }
+.play-chord-btn {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: #523F39;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.play-chord-btn.playing {
+  transform: scale(0.98);
+  filter: brightness(1.05);
+}
 .slider-section {
   margin-bottom: 2rem;
 }
