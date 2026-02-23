@@ -4,7 +4,7 @@ import Lesson from './models/Lesson.js';
 
 dotenv.config();
 
-const MONGO = process.env.MONGO_URI || 'mongodb://localhost:27017/strums';
+const MONGO = process.env.MONGO_URI;
 
 const chapters = [
   {

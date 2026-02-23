@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // fetch lessons from backend and render
     async function loadLessons() {
         try {
-            const res = await fetch('http://localhost:5000/api/lessons');
+            const res = await fetch("https://strums-backend.onrender.com/api/lessons");
             if (!res.ok) throw new Error('Network response not ok');
             const lessons = await res.json();
 
