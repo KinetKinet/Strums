@@ -40,7 +40,8 @@ const chapters = [
         { title: 'Downstroke', text: 'Brush the strings downward from low E to high e. This is your basic strum.' },
         { title: 'Upstroke', text: 'Brush upward from high e to low E. Lighter than downstrokes — used for rhythm fills.' }
       ],
-      pattern: 'Start with: D – D – U – D – U (D = Downstroke, U = Upstroke). Count it as: 1 – 2 – and – 3 – and',
+      pattern: 'Start with: D – D – U – D – U (D = Downstroke, U = Upstroke).',
+      videoUrl: 'https://res.cloudinary.com/du9atwu5h/video/upload/v1772034483/Strumming_r8yjry.mp4',
       practice: ['Practice strumming open strings (no chords) to get the motion right.', 'Use a metronome or drum track at 60 BPM to keep steady time.', 'Add a simple chord like Em and strum along.', 'Gradually increase your speed as you get more comfortable.']
     }
   },

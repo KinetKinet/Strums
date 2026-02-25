@@ -8,6 +8,7 @@ const LessonSchema = new Schema({
   title: String,
   description: String,
   data: { type: Schema.Types.Mixed },
+  videoUrl: String,
 }, { timestamps: true });
 
 const Lesson = mongoose.model('Lesson', LessonSchema);
