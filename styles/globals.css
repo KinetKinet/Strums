@@ -105,7 +105,6 @@ body {
     font-size: 0.875rem;
     font-weight: bold;
     color: #ffffff;
-    text-shadow: #000000 0px 0px 4px;
 }
 
 .fretboard {
@@ -195,7 +194,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
-    padding-top: 4.3rem;
+    padding-top: 0rem;
     text-align: right;
     font-size: 0.75rem;
     font-weight: bold;
@@ -203,6 +202,7 @@ body {
     text-shadow: #000000 0px 0px 3px;
     width: 1.5rem;
     min-width: 1.5rem;
+    position: relative;
 }
 
 .fret-numbers div {
@@ -256,6 +256,55 @@ body {
 
 .placeholder p:last-child {
     font-size: 0.875rem;
+}
+
+/* Bar chord styles */
+.starting-fret-indicator {
+    position: absolute;
+    top: 0;
+    left: -1.5rem;
+    width: 1.5rem;
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #fef3c7;
+    text-shadow: #000000 0px 0px 3px;
+    line-height: 1;
+}
+
+.barre-bar {
+    position: absolute;
+    top: 50%;
+    height: 1.5rem;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.3) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(30, 41, 59, 0.3) 100%);
+    border-radius: 0.75rem;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.barre-dot {
+    position: relative;
+    z-index: 10;
+    width: 2rem;
+    height: 2rem;
+    background: #1e293b;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.legend-dot-barre {
+    width: 1rem;
+    height: 1rem;
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.3) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(30, 41, 59, 0.3) 100%);
+    border-radius: 0.125rem;
 }
 
 .foot {
