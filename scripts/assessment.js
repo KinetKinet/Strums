@@ -139,12 +139,12 @@ function renderChordDiagram(chordKey, containerId) {
       }
       
       // Show open string marker at the first fret position (appears above due to absolute positioning)
-      if (chordFret === 0 && fretNum === fretRange[0] && !hasBarre) {
+      if (chordFret === 0 && fretNum === fretRange[0]) {
         html += '<div class="open-string">O</div>';
       }
       
       // Show muted string marker at the first fret position (appears above due to absolute positioning)
-      if (chordFret === -1 && fretNum === fretRange[0] && !hasBarre) {
+      if (chordFret === -1 && fretNum === fretRange[0]) {
         html += '<div class="muted-string">×</div>';
       }
       
@@ -154,6 +154,26 @@ function renderChordDiagram(chordKey, containerId) {
   });
 
   html += `
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: .5rem; padding-right: 0.25rem;">
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-dot-open"></div>
+            <span>Open</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot-fret"></div>
+            <span>Fret</span>
+          </div>
+          <div class="legend-item">
+            <span style="color: #dc2626; font-size: 1.25rem; font-weight: bold;">×</span>
+            <span>Muted</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot-barre"></div>
+            <span>Barre</span>
           </div>
         </div>
       </div>

@@ -1,35 +1,33 @@
 
 const chordPatterns = {
-  'C-Major': { frets: [0, 3, 2, 0, 1, 0], fingers: ['0', '3', '2', '0', '1', '0'] },
-  'C-Minor': { frets: [-1, 3, 1, 0, 1, 3], fingers: ['x', '3', '1', '0', '1', '4'], barre: { fret: 1, strings: [0, 4, 5] } },
-  'C-7': { frets: [0, 3, 2, 3, 1, 0], fingers: ['x', '3', '2', '4', '1', '0'] },
-  'C-Major7': { frets: [0, 3, 2, 0, 0, 0], fingers: ['x', '3', '2', '0', '0', '0'] },
-  'C-Minor7': { frets: [-1, 3, 1, 3, 1, 3], fingers: ['x', '3', '1', '4', '1', '4'] },
-  'C-Dim': { frets: [-1, 3, 1, 2, 1, 2], fingers: ['x', '4', '1', '3', '1', '2'] },
-  'C-Aug': { frets: [-1, 3, 2, 1, 1, 0], fingers: ['x', '4', '3', '2', '1', '0'] },
-  'C-Sus4': { frets: [-1, 3, 3, 0, 1, 1], fingers: ['x', '3', '4', '0', '1', '1'] },
-  'C-Sus2': { frets: [-1, 3, 0, 0, 1, 3], fingers: ['x', '3', '0', '0', '1', '4'] },
+  'C-Major': { frets: [-1, 3, 2, 0, 1, 0], fingers: ['x', '3', '2', '0', '1', '0'], barre: {fret: 1, strings:[] } },
+  'C-Minor': { frets: [-1, 3, 5, 5, 4, 3], fingers: ['x', '1', '3', '4', '2', '1'], barre: { fret: 3, strings: [1, 5] } },
+  'C-5': { frets: [-1, 3, 5, 5, -1, -1], fingers: ['x', '1', '3', '4', 'x', 'x'], barre: {fret: 3, strings:[] } },
+  'C-7': { frets: [-1, 3, 2, 3, 1, -1], fingers: ['x', '3', '2', '4', '1', 'x'], barre: {fret: 3, strings:[] } },
+  'C-Major7': { frets: [-1, 3, 2, 0, 0, 0], fingers: ['x', '2', '1', '0', '0', '0'], barre: {fret: 1, strings:[] } },
+  'C-Minor7': { frets: [-1, 3, 5, -2, 4, 3], fingers: ['x', '1', '3', '1', '2', '1'], barre: {fret: 3, strings:[1, 5] } },
+  'C-Sus4': { frets: [-1, 3, 5, 5, 6, 3], fingers: ['x', '1', '2', '3', '4', '1'], barre: {fret: 3, strings:[1, 5] } },
+  'C-Sus2': { frets: [-1, 3, 5, 5, -2, 3], fingers: ['x', '1', '2', '3', '4', '1'], barre: {fret: 3, strings:[1, 5] } },
   
-  'G-Major': { frets: [3, 2, 0, 0, 0, 3], fingers: ['3', '2', '0', '0', '0', '4'] },
-  'G-Minor': { frets: [3, 1, 0, 0, 3, 3], fingers: ['3', '1', '0', '0', '3', '4'] },
-  'G-7': { frets: [3, 2, 0, 0, 0, 1], fingers: ['3', '2', '0', '0', '0', '1'] },
-  'G-Major7': { frets: [3, 2, 0, 0, 0, 2], fingers: ['3', '2', '0', '0', '0', '4'] },
-  'G-Minor7': { frets: [3, 1, 0, 0, 3, 1], fingers: ['3', '1', '0', '0', '4', '1'] },
+  'G-Major': { frets: [3, 2, 0, 0, 0, 3], fingers: ['3', '2', '0', '0', '0', '4'], barre: {fret: 1, strings:[] } },
+  'G-Minor': { frets: [3, 1, 0, 0, 3, 3], fingers: ['3', '1', '0', '0', '3', '4'], barre: {fret: 1, strings:[] } },
+  'G-7': { frets: [3, 2, 0, 0, 0, 1], fingers: ['3', '2', '0', '0', '0', '1'], barre: {fret: 1, strings:[] } },
+  'G-Major7': { frets: [3, 2, 0, 0, 0, 2], fingers: ['3', '2', '0', '0', '0', '4'], barre: {fret: 1, strings:[] } },
+  'G-Minor7': { frets: [3, 1, 0, 0, 3, 1], fingers: ['3', '1', '0', '0', '4', '1'], barre: {fret: 1, strings:[] } },
+  'G-Sus4': { frets: [-1, 3, 5, 5, 6, 3], fingers: ['x', '1', '0', '0', '4', '1'], barre: {fret: 1, strings:[] } },
+
+  'D-Major': { frets: [-1, -1, 0, 2, 3, 2], fingers: ['x', 'x', '0', '1', '3', '2'], barre: {fret: 1, strings:[] } },
+  'D-Minor': { frets: [-1, -1, 0, 2, 3, 1], fingers: ['x', 'x', '0', '2', '3', '1'], barre: {fret: 1, strings:[] } },
+  'D-7': { frets: [-1, -1, 0, 2, 1, 2], fingers: ['x', 'x', '0', '2', '1', '3'], barre: {fret: 1, strings:[] } },
+  'D-Major7': { frets: [-1, -1, 0, 2, 2, 2], fingers: ['x', 'x', '0', '1', '1', '1'], barre: {fret: 1, strings:[] } },
   
-  'D-Major': { frets: [-1, -1, 0, 2, 3, 2], fingers: ['x', 'x', '0', '1', '3', '2'] },
-  'D-Minor': { frets: [-1, -1, 0, 2, 3, 1], fingers: ['x', 'x', '0', '2', '3', '1'] },
-  'D-7': { frets: [-1, -1, 0, 2, 1, 2], fingers: ['x', 'x', '0', '2', '1', '3'] },
-  'D-Major7': { frets: [-1, -1, 0, 2, 2, 2], fingers: ['x', 'x', '0', '1', '1', '1'] },
+  'A-Major': { frets: [-1, 0, 2, 2, 2, 0], fingers: ['x', '0', '1', '2', '3', '0'], barre: {fret: 1, strings:[] } },
+  'A-Minor': { frets: [-1, 0, 2, 2, 1, 0], fingers: ['x', '0', '2', '3', '1', '0'], barre: {fret: 1, strings:[] } },
+  'A-7': { frets: [-1, 0, 2, 0, 2, 0], fingers: ['x', '0', '2', '0', '3', '0'], barre: {fret: 1, strings:[] } },
+  'A-Major7': { frets: [-1, 0, 2, 1, 2, 0], fingers: ['x', '0', '2', '1', '3', '0'], barre: {fret: 1, strings:[] } },
   
-  'A-Major': { frets: [-1, 0, 2, 2, 2, 0], fingers: ['x', '0', '1', '2', '3', '0'] },
-  'A-Minor': { frets: [-1, 0, 2, 2, 1, 0], fingers: ['x', '0', '2', '3', '1', '0'] },
-  'A-7': { frets: [-1, 0, 2, 0, 2, 0], fingers: ['x', '0', '2', '0', '3', '0'] },
-  'A-Major7': { frets: [-1, 0, 2, 1, 2, 0], fingers: ['x', '0', '2', '1', '3', '0'] },
-  
-  'E-Major': { frets: [0, 2, 2, 1, 0, 0], fingers: ['0', '2', '3', '1', '0', '0'] },
-  'E-Minor': { frets: [0, 2, 2, 0, 0, 0], fingers: ['0', '2', '3', '0', '0', '0'] },
-  'E-7': { frets: [0, 2, 0, 1, 0, 0], fingers: ['0', '2', '0', '1', '0', '0'] },
-  'E-Major7': { frets: [0, 2, 1, 1, 0, 0], fingers: ['0', '2', '1', '3', '0', '0'] },
+  'E-Major': { frets: [0, 2, 2, 1, 0, 0], fingers: ['0', '2', '3', '1', '0', '0'], barre: {fret: 1, strings:[] } },
+  'E-Major7': { frets: [0, 2, 1, 1, 0, 0], fingers: ['0', '2', '1', '3', '0', '0'], barre: {fret: 1, strings:[] } },
   
   'F-Major': { frets: [1, 3, 3, 2, 1, 1], fingers: ['1', '3', '3', '2', '1', '1'], barre: { fret: 1, strings: [0, 4, 5] } },
   'F-Minor': { frets: [1, 3, 3, 1, 1, 1], fingers: ['1', '3', '3', '1', '1', '1'], barre: { fret: 1, strings: [0, 3, 4, 5] } },
@@ -49,7 +47,7 @@ const chordPatterns = {
 };
 
 const roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const types = ['Major', 'Minor', '5', '7', 'Major7', 'Minor7', 'Dim', 'Aug', 'Sus4', 'Sus2'];
+const types = ['Major', 'Minor', '5', '7', 'Major7', 'Minor7', 'Sus4', 'Sus2', 'Add9', '9'];
 const strings = ['E', 'A', 'D', 'G', 'B', 'e'];
 
 let selectedRoot = 'C';
@@ -183,12 +181,12 @@ function renderDiagram() {
       }
       
       // Show open string marker at the first fret position (appears above due to absolute positioning)
-      if (chordFret === 0 && fretNum === fretRange[0] && !hasBarre) {
+      if (chordFret === 0 && fretNum === fretRange[0]) {
         html += '<div class="open-string">O</div>';
       }
       
       // Show muted string marker at the first fret position (appears above due to absolute positioning)
-      if (chordFret === -1 && fretNum === fretRange[0] && !hasBarre) {
+      if (chordFret === -1 && fretNum === fretRange[0]) {
         html += '<div class="muted-string">×</div>';
       }
       
@@ -215,12 +213,10 @@ function renderDiagram() {
             <span style="color: #dc2626; font-size: 1.25rem; font-weight: bold;">×</span>
             <span>Muted</span>
           </div>
-          ${hasBarre ? `
           <div class="legend-item">
             <div class="legend-dot-barre"></div>
             <span>Barre</span>
           </div>
-          ` : ''}
         </div>
       </div>
     </div>
