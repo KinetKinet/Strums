@@ -881,6 +881,21 @@
   font-size: 0.78rem;
   color: #fff;
 }
+.video-wrap {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+.lesson-video {
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  border: 3px solid #E9B348;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  display: block;
+}
 @media (max-width: 768px) {
   .hamburger {
     display: flex;

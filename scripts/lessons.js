@@ -117,6 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     panel.appendChild(tip);
                 }
 
+                if (d.videoUrl) {
+                    const st = document.createElement('div');
+                    st.className = 'section-title';
+                    st.textContent = 'Video';
+                    panel.appendChild(st);
+
+                    const videoWrap = document.createElement('div');
+                    videoWrap.className = 'video-wrap';
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.src = d.videoUrl;
+                    video.className = 'lesson-video';
+                    video.setAttribute('playsinline', '');
+                    videoWrap.appendChild(video);
+                    panel.appendChild(videoWrap);
+                }
+
                 if (d.practice) {
                     const st = document.createElement('div');
                     st.className = 'section-title';
