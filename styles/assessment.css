@@ -47,7 +47,7 @@
     }
 }
 
-/* ============ START SCREEN ============ */
+/* START SCREEN  */
 .start-content {
     background: #E9B348;
     border: 6px solid #523F39;
@@ -97,7 +97,7 @@
     transform: translateY(0);
 }
 
-/* ============ ASSESSMENT SCREEN ============ */
+ /* ASSESSMENT SCREEN  */
 .progress-bar {
     width: 100%;
     height: 8px;
