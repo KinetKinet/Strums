@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { apiJson } from './api-client.js';
-=======
 function getApiCandidates() {
   const host = window.location.hostname;
   const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '';
@@ -9,11 +6,8 @@ function getApiCandidates() {
     return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
   }
 
-  // On many static hosts, unknown /api routes may return HTML with 200.
-  // Try the real API host first to avoid false-positive responses.
   return ['https://strums-backend.onrender.com', window.location.origin];
 }
->>>>>>> 6c3c863eb880000a6294c973cdaa0a539b1006dd
 
 function parseChordName(name = '') {
   const firstDash = name.indexOf('-');
@@ -28,14 +22,6 @@ function parseChordName(name = '') {
 }
 
 export async function fetchChordLibrary() {
-<<<<<<< HEAD
-  const rows = await apiJson('/api/chord-library');
-  if (!Array.isArray(rows)) {
-    throw new Error('Unexpected payload shape for chord library');
-  }
-
-  return normalizeChordRows(rows);
-=======
   const candidates = getApiCandidates();
   let lastError = null;
 
@@ -66,7 +52,6 @@ export async function fetchChordLibrary() {
   }
 
   throw lastError || new Error('Failed to load chord library');
->>>>>>> 6c3c863eb880000a6294c973cdaa0a539b1006dd
 }
 
 function normalizeChordRows(rows) {
