@@ -1,8 +1,11 @@
 import { fetchChordLibrary } from './chord-data-api.js';
+import { apiJson } from './api-client.js';
+import { mountAdminLogin, getAuthHeaders, isAdminLoggedIn } from './admin-auth.js';
 
 const strings = ['E', 'A', 'D', 'G', 'B', 'e'];
 
 let chordPatterns = {};
+let rowsByName = {};
 let roots = [];
 let types = [];
 
@@ -24,6 +27,7 @@ function updateChordName() {
     chordName.textContent = `${selectedRoot} ${selectedType}`;
   }
   setAudioSource();
+  updateAdminEditor();
 }
 
 function getAudioFilePath(root, type) {
@@ -255,6 +259,103 @@ function showLoadError() {
   `;
 }
 
+function getSelectedChordRow() {
+  const key = `${selectedRoot}-${selectedType}`;
+  return rowsByName[key] || null;
+}
+
+function parseNumberArray(input) {
+  return input
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0)
+    .map((part) => Number(part));
+}
+
+function updateAdminEditor() {
+  const panel = document.getElementById('adminChordEditor');
+  if (!panel) return;
+
+  if (!isAdminLoggedIn()) {
+    panel.hidden = true;
+    return;
+  }
+
+  const row = getSelectedChordRow();
+  if (!row) {
+    panel.hidden = false;
+    panel.innerHTML = '<p class="admin-edit-msg">No database row found for selected chord.</p>';
+    return;
+  }
+
+  const frets = Array.isArray(row.frets) ? row.frets.join(',') : '';
+  const fingers = Array.isArray(row.fingers) ? row.fingers.join(',') : '';
+  const barreFret = row.barre?.fret ?? '';
+  const barreStrings = Array.isArray(row.barre?.strings) ? row.barre.strings.join(',') : '';
+
+  panel.hidden = false;
+  panel.innerHTML = `
+    <h3>Admin Chord Editor</h3>
+    <p>Editing: <strong>${row.name}</strong></p>
+    <label>Name <input id="admin-chord-name" type="text" value="${row.name}" /></label>
+    <label>Frets (comma-separated) <input id="admin-chord-frets" type="text" value="${frets}" /></label>
+    <label>Fingers (comma-separated) <input id="admin-chord-fingers" type="text" value="${fingers}" /></label>
+    <label>Barre Fret <input id="admin-chord-barre-fret" type="number" value="${barreFret}" /></label>
+    <label>Barre Strings (comma-separated indexes) <input id="admin-chord-barre-strings" type="text" value="${barreStrings}" /></label>
+    <div class="admin-edit-actions">
+      <button id="admin-save-chord" type="button">Save Chord</button>
+      <span id="admin-save-chord-msg" class="admin-edit-msg"></span>
+    </div>
+  `;
+
+  const saveBtn = document.getElementById('admin-save-chord');
+  saveBtn?.addEventListener('click', async () => {
+    const msg = document.getElementById('admin-save-chord-msg');
+
+    try {
+      const updatedPayload = {
+        name: document.getElementById('admin-chord-name').value.trim(),
+        frets: parseNumberArray(document.getElementById('admin-chord-frets').value),
+        fingers: document.getElementById('admin-chord-fingers').value.split(',').map((x) => x.trim()),
+        barre: {
+          fret: Number(document.getElementById('admin-chord-barre-fret').value || 0),
+          strings: parseNumberArray(document.getElementById('admin-chord-barre-strings').value),
+        },
+      };
+
+      await apiJson(`/api/chord-library/${row._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify(updatedPayload),
+      });
+
+      if (msg) msg.textContent = 'Saved';
+
+      const refreshed = await fetchChordLibrary();
+      chordPatterns = refreshed.chordPatterns;
+      rowsByName = refreshed.rowsByName || {};
+      roots = refreshed.roots;
+      types = refreshed.types;
+
+      const parsed = updatedPayload.name.split('-');
+      if (parsed.length >= 2) {
+        selectedRoot = parsed[0];
+        selectedType = parsed.slice(1).join('-');
+      }
+
+      initializeRootButtons();
+      initializeTypeButtons();
+      updateChordName();
+      renderDiagram();
+    } catch (err) {
+      if (msg) msg.textContent = err.message || 'Save failed';
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('chordDiagram')) {
     return;
@@ -263,6 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const data = await fetchChordLibrary();
     chordPatterns = data.chordPatterns;
+    rowsByName = data.rowsByName || {};
     roots = data.roots;
     types = data.types;
 
@@ -278,6 +380,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeTypeButtons();
     updateChordName();
     renderDiagram();
+    updateAdminEditor();
+
+    let adminEditor = document.getElementById('adminChordEditor');
+    if (!adminEditor) {
+      adminEditor = document.createElement('div');
+      adminEditor.id = 'adminChordEditor';
+      adminEditor.className = 'admin-editor-card';
+      adminEditor.hidden = true;
+      document.querySelector('.container')?.appendChild(adminEditor);
+    }
+
+    mountAdminLogin(() => {
+      updateAdminEditor();
+    });
 
     const playBtn = document.getElementById('playChordBtn');
     if (playBtn) {

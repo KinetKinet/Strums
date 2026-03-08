@@ -174,9 +174,6 @@
   }
 }
 @layer utilities {
-  .visible {
-    visibility: visible;
-  }
   .absolute {
     position: absolute;
   }
@@ -212,6 +209,9 @@
   }
   .grid {
     display: grid;
+  }
+  .hidden {
+    display: none;
   }
   .inline-block {
     display: inline-block;
@@ -1858,6 +1858,120 @@ html, body {
 }
 .placeholder p:last-child {
   font-size: 0.875rem;
+}
+.admin-auth-host {
+  position: fixed;
+  right: 1rem;
+  top: 1rem;
+  z-index: 2000;
+}
+.admin-auth-btn {
+  background: #111827;
+  color: #fff;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.75);
+  display: grid;
+  place-items: center;
+  z-index: 2100;
+}
+.admin-modal {
+  width: min(420px, 92vw);
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+.admin-modal input {
+  width: 100%;
+  padding: 0.55rem;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #1e293b;
+  color: #fff;
+}
+.admin-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.admin-modal-actions button {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-auth-msg {
+  color: #fca5a5;
+  min-height: 1.1rem;
+  margin: 0;
+}
+.admin-editor-card, .admin-edit-wrap {
+  margin-top: 1rem;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.8rem;
+  color: #fff;
+}
+.admin-edit-toggle {
+  border: 1px solid #60a5fa;
+  background: #1d4ed8;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-edit-form {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.admin-edit-form label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+.admin-edit-form input, .admin-edit-form textarea, .admin-editor-card input, .admin-editor-card textarea {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #0f172a;
+  color: #fff;
+  padding: 0.5rem;
+}
+.admin-json {
+  min-height: 160px;
+  font-family: Consolas, monospace;
+}
+.admin-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.admin-edit-actions button {
+  border: 0;
+  border-radius: 8px;
+  background: #16a34a;
+  color: #fff;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-edit-msg {
+  color: #86efac;
+  font-size: 0.9rem;
 }
 .starting-fret-indicator {
   position: absolute;

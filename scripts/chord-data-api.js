@@ -1,13 +1,4 @@
-function getApiCandidates() {
-  const host = window.location.hostname;
-  const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '';
-
-  if (isLocalHost) {
-    return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
-  }
-
-  return [window.location.origin, 'https://strums-backend.onrender.com'];
-}
+import { apiJson } from './api-client.js';
 
 function parseChordName(name = '') {
   const firstDash = name.indexOf('-');
@@ -22,28 +13,17 @@ function parseChordName(name = '') {
 }
 
 export async function fetchChordLibrary() {
-  const candidates = getApiCandidates();
-  let response = null;
-  let lastError = null;
-
-  for (const base of candidates) {
-    try {
-      response = await fetch(`${base}/api/chord-library`);
-      if (response.ok) {
-        break;
-      }
-      lastError = new Error(`Request failed with status ${response.status} at ${base}`);
-    } catch (err) {
-      lastError = err;
-    }
+  const rows = await apiJson('/api/chord-library');
+  if (!Array.isArray(rows)) {
+    throw new Error('Unexpected payload shape for chord library');
   }
 
-  if (!response || !response.ok) {
-    throw lastError || new Error('Failed to load chord library');
-  }
+  return normalizeChordRows(rows);
+}
 
-  const rows = await response.json();
+function normalizeChordRows(rows) {
   const chordPatterns = {};
+  const rowsByName = {};
   const roots = new Set();
   const types = new Set();
 
@@ -58,6 +38,7 @@ export async function fetchChordLibrary() {
       fingers: row.fingers,
       barre: row.barre || null,
     };
+    rowsByName[row.name] = row;
 
     if (root) roots.add(root);
     if (type) types.add(type);
@@ -65,6 +46,7 @@ export async function fetchChordLibrary() {
 
   return {
     chordPatterns,
+    rowsByName,
     roots: Array.from(roots),
     types: Array.from(types),
     availableChords: Object.keys(chordPatterns),
