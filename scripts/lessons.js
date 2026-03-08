@@ -1,5 +1,5 @@
 import { apiJson } from './api-client.js';
-import { mountAdminLogin, getAuthHeaders, isAdminLoggedIn } from './admin-auth.js';
+import { getAuthHeaders, isAdminLoggedIn } from './admin-auth.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const chapterList = document.getElementById('chapter-list');
@@ -319,10 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.classList.remove('show');
     });
   }
-
-  mountAdminLogin(() => {
-    renderLessons();
-  });
 
   loadLessons();
 });

@@ -20,7 +20,7 @@ export function getAuthHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-async function loginAdmin(username, password) {
+export async function loginAdminWithCredentials(username, password) {
   const payload = await apiJson('/api/admin/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,6 +33,8 @@ async function loginAdmin(username, password) {
 
   localStorage.setItem(TOKEN_KEY, payload.token);
   window.dispatchEvent(new CustomEvent('strums-admin-changed', { detail: { loggedIn: true } }));
+
+  return payload;
 }
 
 export function mountAdminLogin(onAuthChange) {
@@ -92,7 +94,7 @@ export function mountAdminLogin(onAuthChange) {
   submit.addEventListener('click', async () => {
     msg.textContent = '';
     try {
-      await loginAdmin(user.value.trim(), pass.value);
+      await loginAdminWithCredentials(user.value.trim(), pass.value);
       closeModal();
       renderButton();
       if (onAuthChange) onAuthChange(true);

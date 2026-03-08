@@ -1,6 +1,6 @@
 import { fetchChordLibrary } from './chord-data-api.js';
 import { apiJson } from './api-client.js';
-import { mountAdminLogin, getAuthHeaders, isAdminLoggedIn } from './admin-auth.js';
+import { getAuthHeaders, isAdminLoggedIn } from './admin-auth.js';
 
 const strings = ['E', 'A', 'D', 'G', 'B', 'e'];
 
@@ -391,9 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.querySelector('.container')?.appendChild(adminEditor);
     }
 
-    mountAdminLogin(() => {
-      updateAdminEditor();
-    });
+    updateAdminEditor();
 
     const playBtn = document.getElementById('playChordBtn');
     if (playBtn) {
