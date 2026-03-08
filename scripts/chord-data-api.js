@@ -6,7 +6,9 @@ function getApiCandidates() {
     return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
   }
 
-  return [window.location.origin, 'https://strums-backend.onrender.com'];
+  // On many static hosts, unknown /api routes may return HTML with 200.
+  // Try the real API host first to avoid false-positive responses.
+  return ['https://strums-backend.onrender.com', window.location.origin];
 }
 
 function parseChordName(name = '') {
@@ -23,26 +25,38 @@ function parseChordName(name = '') {
 
 export async function fetchChordLibrary() {
   const candidates = getApiCandidates();
-  let response = null;
   let lastError = null;
 
   for (const base of candidates) {
     try {
-      response = await fetch(`${base}/api/chord-library`);
-      if (response.ok) {
-        break;
+      const response = await fetch(`${base}/api/chord-library`);
+      if (!response.ok) {
+        lastError = new Error(`Request failed with status ${response.status} at ${base}`);
+        continue;
       }
-      lastError = new Error(`Request failed with status ${response.status} at ${base}`);
+
+      const contentType = (response.headers.get('content-type') || '').toLowerCase();
+      if (!contentType.includes('application/json')) {
+        lastError = new Error(`Non-JSON response returned from ${base}`);
+        continue;
+      }
+
+      const rows = await response.json();
+      if (!Array.isArray(rows)) {
+        lastError = new Error(`Unexpected payload shape from ${base}`);
+        continue;
+      }
+
+      return normalizeChordRows(rows);
     } catch (err) {
       lastError = err;
     }
   }
 
-  if (!response || !response.ok) {
-    throw lastError || new Error('Failed to load chord library');
-  }
+  throw lastError || new Error('Failed to load chord library');
+}
 
-  const rows = await response.json();
+function normalizeChordRows(rows) {
   const chordPatterns = {};
   const roots = new Set();
   const types = new Set();

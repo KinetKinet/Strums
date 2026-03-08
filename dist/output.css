@@ -180,6 +180,9 @@
   .absolute {
     position: absolute;
   }
+  .static {
+    position: static;
+  }
   .left-10 {
     left: calc(var(--spacing) * 10);
   }
