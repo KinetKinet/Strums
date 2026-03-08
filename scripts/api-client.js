@@ -17,7 +17,21 @@ export async function apiJson(path, options = {}) {
     try {
       const response = await fetch(`${base}${path}`, options);
       if (!response.ok) {
-        lastError = new Error(`Request failed with status ${response.status} at ${base}`);
+        let detail = '';
+        try {
+          const contentType = (response.headers.get('content-type') || '').toLowerCase();
+          if (contentType.includes('application/json')) {
+            const payload = await response.json();
+            detail = payload?.message || JSON.stringify(payload);
+          } else {
+            detail = await response.text();
+          }
+        } catch (_err) {
+          // Keep fallback detail.
+        }
+
+        const suffix = detail ? `: ${detail}` : '';
+        lastError = new Error(`Request failed with status ${response.status} at ${base}${suffix}`);
         continue;
       }
 

@@ -17,15 +17,19 @@ function isValidPassword(input, expected) {
 router.post('/login', (req, res) => {
   const { username, password } = req.body || {};
 
-  const adminUser = process.env.ADMIN_USERNAME || 'admin';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin1234';
+  const adminUser = (process.env.ADMIN_USERNAME || '').trim();
+  const adminPassword = (process.env.ADMIN_PASSWORD || '').trim();
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
     return res.status(500).json({ message: 'JWT_SECRET is not configured' });
   }
 
-  if (username !== adminUser || !isValidPassword(password || '', adminPassword)) {
+  if (!adminUser || !adminPassword) {
+    return res.status(500).json({ message: 'ADMIN_USERNAME or ADMIN_PASSWORD is not configured' });
+  }
+
+  if ((username || '').trim() !== adminUser || !isValidPassword(password || '', adminPassword)) {
     return res.status(401).json({ message: 'Invalid admin credentials' });
   }
 
