@@ -294,10 +294,20 @@ function parseNumberArray(input) {
 
 function getUploadRouteFriendlyError(err) {
   const raw = String(err?.message || 'Upload failed');
-  const missingUploadRoute = raw.includes('status 404') && raw.includes('/api/cloudinary/upload-video');
+  const missingUploadRoute = (
+    raw.includes('status 404') && raw.includes('/api/cloudinary/upload-video')
+  ) || raw.includes('Cannot POST /api/cloudinary/upload-video');
+  const missingAdminToken = raw.toLowerCase().includes('missing admin token')
+    || (raw.includes('status 401') && raw.includes('/api/cloudinary/upload-video'));
+  const invalidAdminToken = raw.toLowerCase().includes('invalid token')
+    || raw.toLowerCase().includes('jwt');
 
   if (missingUploadRoute) {
-    return 'Upload route is not deployed yet. Redeploy backend to enable Cloudinary upload.';
+    return 'Upload is unavailable on the website right now. Backend needs redeploy to enable /api/cloudinary/upload-video.';
+  }
+
+  if (missingAdminToken || invalidAdminToken) {
+    return 'Admin login expired or missing. Login again on index page, then return and retry upload.';
   }
 
   return raw;
@@ -331,9 +341,10 @@ function updateAdminEditor() {
     <p>Editing: <strong>${row.name}</strong></p>
     <label>Name <input id="admin-chord-name" type="text" value="${row.name}" /></label>
     <p class="admin-edit-msg">Current Video: ${hasVideo ? 'Saved in Cloudinary' : 'None'}</p>
-    <label>Upload Video File
+    <div class="admin-upload-row">
+      <label for="admin-chord-video-file" class="admin-upload-label">Upload Video File</label>
       <input id="admin-chord-video-file" type="file" accept="video/*" />
-    </label>
+    </div>
     <label>Frets (comma-separated) <input id="admin-chord-frets" type="text" value="${frets}" /></label>
     <label>Fingers (comma-separated) <input id="admin-chord-fingers" type="text" value="${fingers}" /></label>
     <label>Barre Fret <input id="admin-chord-barre-fret" type="number" value="${barreFret}" /></label>

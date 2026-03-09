@@ -195,7 +195,6 @@ function selectOption(button) {
   if (isCorrect) {
     score += 1;
     showFeedback('Correct!', 'correct');
-    playChordSound();
   } else {
     const correctChord = document.querySelector('[data-correct="true"]');
     if (correctChord) {
@@ -252,10 +251,6 @@ function updateProgressBar() {
   if (currentQuestionEl) {
     currentQuestionEl.textContent = String(currentQuestion + 1);
   }
-}
-
-function playChordSound() {
-  console.log(`Playing sound for ${currentChordKey}`);
 }
 
 function showResults() {

@@ -355,6 +355,15 @@ body {
     font-size: 0.9rem;
 }
 
+.admin-upload-row {
+    display: grid;
+    gap: 0.25rem;
+}
+
+.admin-upload-label {
+    font-size: 0.9rem;
+}
+
 .admin-edit-form input,
 .admin-edit-form textarea,
 .admin-editor-card input,
