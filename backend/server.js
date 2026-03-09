@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import lessonsRoutes from './routes/lessons.js';
 import chordLibraryRoutes from './routes/chordLibrary.js';
 import adminRoutes from './routes/admin.js';
+import cloudinaryRoutes from './routes/cloudinaryRoutes.js';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/lessons', lessonsRoutes);
 app.use('/api/chord-library', chordLibraryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/cloudinary', cloudinaryRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO = process.env.MONGO_URI;

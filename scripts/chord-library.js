@@ -26,30 +26,50 @@ function updateChordName() {
   if (chordName) {
     chordName.textContent = `${selectedRoot} ${selectedType}`;
   }
-  setAudioSource();
+  hideVideoPlayer();
   updateAdminEditor();
 }
 
-function getAudioFilePath(root, type) {
-  const fileName = `${encodeURIComponent(root)}-${encodeURIComponent(type)}.mp3`;
-  return `../assets/audio/${fileName}`;
+function hideVideoPlayer() {
+  const modal = document.getElementById('chordVideoModal');
+  const video = document.getElementById('chordVideoPlayer');
+  if (!modal || !video) return;
+
+  modal.hidden = true;
+  video.pause();
+  video.removeAttribute('src');
+  video.load();
 }
 
-function setAudioSource() {
-  const audioEl = document.getElementById('chordAudio');
-  if (!audioEl) return;
-  audioEl.src = getAudioFilePath(selectedRoot, selectedType);
+function openVideoPlayer(videoUrl, chordNameText) {
+  const modal = document.getElementById('chordVideoModal');
+  const video = document.getElementById('chordVideoPlayer');
+  const title = document.getElementById('chordVideoTitle');
+  const msg = document.getElementById('playChordMsg');
+
+  if (!modal || !video) return;
+
+  if (!videoUrl) {
+    if (msg) {
+      msg.textContent = 'No video yet for this chord.';
+    }
+    return;
+  }
+
+  if (msg) msg.textContent = '';
+  if (title) title.textContent = chordNameText || 'Chord Video';
+
+  video.src = videoUrl;
+  modal.hidden = false;
+  video.currentTime = 0;
+  video.play().catch(() => {
+    // Ignore autoplay restrictions.
+  });
 }
 
 function playCurrentChord() {
-  const audioEl = document.getElementById('chordAudio');
-  if (!audioEl) return;
-
-  setAudioSource();
-  audioEl.currentTime = 0;
-  audioEl.play().catch(() => {
-    // Ignore autoplay restrictions.
-  });
+  const row = getSelectedChordRow();
+  openVideoPlayer(row?.videoUrl || '', `${selectedRoot} ${selectedType}`);
 }
 
 function renderDiagram() {
@@ -272,6 +292,17 @@ function parseNumberArray(input) {
     .map((part) => Number(part));
 }
 
+function getUploadRouteFriendlyError(err) {
+  const raw = String(err?.message || 'Upload failed');
+  const missingUploadRoute = raw.includes('status 404') && raw.includes('/api/cloudinary/upload-video');
+
+  if (missingUploadRoute) {
+    return 'Upload route is not deployed yet. Redeploy backend to enable Cloudinary upload.';
+  }
+
+  return raw;
+}
+
 function updateAdminEditor() {
   const panel = document.getElementById('adminChordEditor');
   if (!panel) return;
@@ -292,12 +323,17 @@ function updateAdminEditor() {
   const fingers = Array.isArray(row.fingers) ? row.fingers.join(',') : '';
   const barreFret = row.barre?.fret ?? '';
   const barreStrings = Array.isArray(row.barre?.strings) ? row.barre.strings.join(',') : '';
+  const hasVideo = Boolean(row.videoUrl);
 
   panel.hidden = false;
   panel.innerHTML = `
     <h3>Admin Chord Editor</h3>
     <p>Editing: <strong>${row.name}</strong></p>
     <label>Name <input id="admin-chord-name" type="text" value="${row.name}" /></label>
+    <p class="admin-edit-msg">Current Video: ${hasVideo ? 'Saved in Cloudinary' : 'None'}</p>
+    <label>Upload Video File
+      <input id="admin-chord-video-file" type="file" accept="video/*" />
+    </label>
     <label>Frets (comma-separated) <input id="admin-chord-frets" type="text" value="${frets}" /></label>
     <label>Fingers (comma-separated) <input id="admin-chord-fingers" type="text" value="${fingers}" /></label>
     <label>Barre Fret <input id="admin-chord-barre-fret" type="number" value="${barreFret}" /></label>
@@ -309,12 +345,39 @@ function updateAdminEditor() {
   `;
 
   const saveBtn = document.getElementById('admin-save-chord');
+
   saveBtn?.addEventListener('click', async () => {
     const msg = document.getElementById('admin-save-chord-msg');
+    const fileInput = document.getElementById('admin-chord-video-file');
+    const file = fileInput?.files?.[0];
+    let nextVideoUrl = row.videoUrl || '';
 
     try {
+      if (file) {
+        if (msg) msg.textContent = 'Uploading video...';
+        const formData = new FormData();
+        formData.append('video', file);
+
+        const uploaded = await apiJson('/api/cloudinary/upload-video', {
+          method: 'POST',
+          headers: {
+            ...getAuthHeaders(),
+          },
+          body: formData,
+        });
+
+        if (!uploaded?.videoUrl) {
+          throw new Error('Upload succeeded but no video URL was returned');
+        }
+
+        nextVideoUrl = uploaded.videoUrl;
+      }
+
+      if (msg) msg.textContent = 'Saving chord...';
+
       const updatedPayload = {
         name: document.getElementById('admin-chord-name').value.trim(),
+        videoUrl: nextVideoUrl,
         frets: parseNumberArray(document.getElementById('admin-chord-frets').value),
         fingers: document.getElementById('admin-chord-fingers').value.split(',').map((x) => x.trim()),
         barre: {
@@ -346,12 +409,14 @@ function updateAdminEditor() {
         selectedType = parsed.slice(1).join('-');
       }
 
+      if (fileInput) fileInput.value = '';
+
       initializeRootButtons();
       initializeTypeButtons();
       updateChordName();
       renderDiagram();
     } catch (err) {
-      if (msg) msg.textContent = err.message || 'Save failed';
+      if (msg) msg.textContent = getUploadRouteFriendlyError(err);
     }
   });
 }
@@ -397,6 +462,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (playBtn) {
       playBtn.addEventListener('click', playCurrentChord);
     }
+
+    const closeVideoBtn = document.getElementById('closeChordVideo');
+    closeVideoBtn?.addEventListener('click', hideVideoPlayer);
+
+    const videoBackdrop = document.getElementById('chordVideoModal');
+    videoBackdrop?.addEventListener('click', (e) => {
+      if (e.target === videoBackdrop) {
+        hideVideoPlayer();
+      }
+    });
   } catch (error) {
     console.error(error);
     showLoadError();

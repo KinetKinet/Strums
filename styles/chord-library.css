@@ -69,6 +69,64 @@
     filter: brightness(1.05);
 }
 
+.play-chord-msg {
+    min-height: 1.2rem;
+    margin-top: 0.5rem;
+    color: #fef3c7;
+    text-shadow: #000000 0px 0px 4px;
+    font-size: 0.9rem;
+}
+
+.chord-video-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: grid;
+    place-items: center;
+    z-index: 2200;
+    padding: 1rem;
+}
+
+.chord-video-card {
+    width: min(420px, 94vw);
+    background: #1f2937;
+    border: 1px solid #4b5563;
+    border-radius: 12px;
+    padding: 0.7rem;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5);
+}
+
+.chord-video-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.chord-video-top h3 {
+    margin: 0;
+    color: #f9fafb;
+    font-size: 1rem;
+}
+
+.chord-video-top button {
+    border: 0;
+    border-radius: 8px;
+    background: #523F39;
+    color: #fff;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+#chordVideoPlayer {
+    width: 100%;
+    max-height: 52vh;
+    border-radius: 8px;
+    background: #000;
+}
+
 .slider-section {
     margin-bottom: 2rem;
 }

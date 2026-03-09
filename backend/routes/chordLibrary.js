@@ -21,6 +21,7 @@ router.put("/:id", requireAdmin, async (req, res) => {
       req.params.id,
       {
         name: req.body.name,
+        videoUrl: req.body.videoUrl,
         frets: req.body.frets,
         fingers: req.body.fingers,
         barre: req.body.barre,

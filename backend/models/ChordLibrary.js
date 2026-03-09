@@ -7,6 +7,11 @@ const chordPatternSchema = new Schema({
     type: String,
     required: true,
   },
+  videoUrl: {
+    type: String,
+    default: '',
+    trim: true,
+  },
   frets: {
     type: [Number],
     required: true,
