@@ -301,6 +301,8 @@ function getUploadRouteFriendlyError(err) {
     || (raw.includes('status 401') && raw.includes('/api/cloudinary/upload-video'));
   const invalidAdminToken = raw.toLowerCase().includes('invalid token')
     || raw.toLowerCase().includes('jwt');
+  const cloudinaryNotConfigured = raw.toLowerCase().includes('cloudinary is not configured')
+    || raw.toLowerCase().includes('must supply api_key');
 
   if (missingUploadRoute) {
     return 'Upload is unavailable on the website right now. Backend needs redeploy to enable /api/cloudinary/upload-video.';
@@ -308,6 +310,10 @@ function getUploadRouteFriendlyError(err) {
 
   if (missingAdminToken || invalidAdminToken) {
     return 'Admin login expired or missing. Login again on index page, then return and retry upload.';
+  }
+
+  if (cloudinaryNotConfigured) {
+    return 'Backend Cloudinary env is missing. Add Cloudinary keys in Render backend environment variables and redeploy.';
   }
 
   return raw;

@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { unlink } from 'node:fs/promises';
-import cloudinary from '../config/cloudinary.js';
+import cloudinary, { isCloudinaryConfigured } from '../config/cloudinary.js';
 import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
@@ -10,6 +10,12 @@ const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/upload-video', requireAdmin, upload.single('video'), async (req, res) => {
+  if (!isCloudinaryConfigured) {
+    return res.status(500).json({
+      message: 'Cloudinary is not configured on backend. Set CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET.',
+    });
+  }
+
   if (!req.file?.path) {
     return res.status(400).json({ message: 'No video file uploaded' });
   }

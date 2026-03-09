@@ -16,6 +16,33 @@ document.addEventListener('DOMContentLoaded', () => {
   let lessonsCache = [];
   let activeChapter = null;
 
+  function getUploadRouteFriendlyError(err) {
+    const raw = String(err?.message || 'Upload failed');
+    const missingUploadRoute = (
+      raw.includes('status 404') && raw.includes('/api/cloudinary/upload-video')
+    ) || raw.includes('Cannot POST /api/cloudinary/upload-video');
+    const missingAdminToken = raw.toLowerCase().includes('missing admin token')
+      || (raw.includes('status 401') && raw.includes('/api/cloudinary/upload-video'));
+    const invalidAdminToken = raw.toLowerCase().includes('invalid token')
+      || raw.toLowerCase().includes('jwt');
+    const cloudinaryNotConfigured = raw.toLowerCase().includes('cloudinary is not configured')
+      || raw.toLowerCase().includes('must supply api_key');
+
+    if (missingUploadRoute) {
+      return 'Upload is unavailable on the website right now. Backend needs redeploy to enable /api/cloudinary/upload-video.';
+    }
+
+    if (missingAdminToken || invalidAdminToken) {
+      return 'Admin login expired or missing. Login again on index page, then return and retry upload.';
+    }
+
+    if (cloudinaryNotConfigured) {
+      return 'Backend Cloudinary env is missing. Add Cloudinary keys in Render backend environment variables and redeploy.';
+    }
+
+    return raw;
+  }
+
   function bindChapterButtons() {
     const btns = document.querySelectorAll('.chapter-btn');
     const panels = document.querySelectorAll('.lesson-panel');
@@ -40,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function lessonEditorTemplate(lesson) {
     const dataJson = JSON.stringify(lesson.data || {}, null, 2);
+    const currentVideoUrl = lesson.videoUrl || lesson.data?.videoUrl || '';
 
     return `
       <div class="admin-edit-wrap">
@@ -49,7 +77,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <label>Tag <input type="text" id="edit-tag-${lesson._id}" value="${lesson.tag || ''}" /></label>
           <label>Title <input type="text" id="edit-title-${lesson._id}" value="${lesson.title || ''}" /></label>
           <label>Description <textarea id="edit-description-${lesson._id}">${lesson.description || ''}</textarea></label>
-          <label>Video URL <input type="text" id="edit-video-${lesson._id}" value="${lesson.videoUrl || ''}" /></label>
+          <p class="admin-edit-msg">Current Video: ${currentVideoUrl ? 'Saved in Cloudinary' : 'None'}</p>
+          <div class="admin-upload-row">
+            <span class="admin-upload-label">Upload Video File</span>
+            <input id="edit-video-file-${lesson._id}" class="admin-file-input" type="file" accept="video/*" />
+            <div class="admin-file-picker-row">
+              <button id="edit-video-pick-${lesson._id}" type="button" class="admin-file-pick-btn">Choose Video</button>
+              <span id="edit-video-file-name-${lesson._id}" class="admin-file-name">No file selected</span>
+            </div>
+          </div>
           <label>Data JSON <textarea id="edit-data-${lesson._id}" class="admin-json">${dataJson}</textarea></label>
           <div class="admin-edit-actions">
             <button type="button" data-lesson-save="${lesson._id}">Save</button>
@@ -139,7 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
         panel.appendChild(tip);
       }
 
-      if (data.videoUrl) {
+      const lessonVideoUrl = lesson.videoUrl || data.videoUrl;
+      if (lessonVideoUrl) {
         const title = document.createElement('div');
         title.className = 'section-title';
         title.textContent = 'Video';
@@ -149,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         videoWrap.className = 'video-wrap';
         const video = document.createElement('video');
         video.controls = true;
-        video.src = data.videoUrl;
+        video.src = lessonVideoUrl;
         video.className = 'lesson-video';
         video.setAttribute('playsinline', '');
         videoWrap.appendChild(video);
@@ -262,15 +299,49 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-lesson-save');
         const msg = document.getElementById(`lesson-save-msg-${id}`);
+        const fileInput = document.getElementById(`edit-video-file-${id}`);
+        const videoFile = fileInput?.files?.[0];
 
         try {
+          let nextVideoUrl = '';
+          if (videoFile) {
+            if (msg) msg.textContent = 'Uploading video...';
+            const formData = new FormData();
+            formData.append('video', videoFile);
+
+            const uploaded = await apiJson('/api/cloudinary/upload-video', {
+              method: 'POST',
+              headers: {
+                ...getAuthHeaders(),
+              },
+              body: formData,
+            });
+
+            if (!uploaded?.videoUrl) {
+              throw new Error('Upload succeeded but no video URL was returned');
+            }
+
+            nextVideoUrl = uploaded.videoUrl;
+          }
+
+          const parsedData = JSON.parse(document.getElementById(`edit-data-${id}`).value || '{}');
+          if (nextVideoUrl) {
+            parsedData.videoUrl = nextVideoUrl;
+          }
+
+          if (!nextVideoUrl) {
+            nextVideoUrl = parsedData.videoUrl || '';
+          }
+
+          if (msg) msg.textContent = 'Saving lesson...';
+
           const payload = {
             chapter: Number(document.getElementById(`edit-chapter-${id}`).value),
             tag: document.getElementById(`edit-tag-${id}`).value,
             title: document.getElementById(`edit-title-${id}`).value,
             description: document.getElementById(`edit-description-${id}`).value,
-            videoUrl: document.getElementById(`edit-video-${id}`).value,
-            data: JSON.parse(document.getElementById(`edit-data-${id}`).value || '{}'),
+            videoUrl: nextVideoUrl,
+            data: parsedData,
           };
 
           await apiJson(`/api/lessons/${id}`, {
@@ -283,10 +354,30 @@ document.addEventListener('DOMContentLoaded', () => {
           });
 
           if (msg) msg.textContent = 'Saved';
+          if (fileInput) fileInput.value = '';
+          const fileNameEl = document.getElementById(`edit-video-file-name-${id}`);
+          if (fileNameEl) fileNameEl.textContent = 'No file selected';
           await loadLessons();
         } catch (err) {
-          if (msg) msg.textContent = err.message || 'Save failed';
+          if (msg) msg.textContent = getUploadRouteFriendlyError(err);
         }
+      });
+    });
+
+    document.querySelectorAll('[id^="edit-video-pick-"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.id.replace('edit-video-pick-', '');
+        const fileInput = document.getElementById(`edit-video-file-${id}`);
+        fileInput?.click();
+      });
+    });
+
+    document.querySelectorAll('[id^="edit-video-file-"]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const id = input.id.replace('edit-video-file-', '');
+        const fileNameEl = document.getElementById(`edit-video-file-name-${id}`);
+        const selectedName = input.files?.[0]?.name || 'No file selected';
+        if (fileNameEl) fileNameEl.textContent = selectedName;
       });
     });
   }
