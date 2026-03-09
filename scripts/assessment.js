@@ -1,6 +1,7 @@
 import { fetchChordLibrary } from './chord-data-api.js';
 
 const strings = ['E', 'A', 'D', 'G', 'B', 'e'];
+const TOTAL_QUESTIONS = 10;
 
 let chordPatterns = {};
 let availableChords = [];
@@ -140,7 +141,7 @@ function displayQuestion() {
     questionsAsked = [];
   }
 
-  if (currentQuestion < 4) {
+  if (currentQuestion < TOTAL_QUESTIONS) {
     if (questionsAsked.length === currentQuestion) {
       const newChords = getRandomChords(1);
       currentChordKey = newChords[0];
@@ -205,7 +206,7 @@ function selectOption(button) {
 
   setTimeout(() => {
     currentQuestion += 1;
-    if (currentQuestion < 4) {
+    if (currentQuestion < TOTAL_QUESTIONS) {
       displayQuestion();
     } else {
       showResults();
@@ -241,7 +242,7 @@ function enableOptions() {
 }
 
 function updateProgressBar() {
-  const progressPercentage = (currentQuestion / 4) * 100;
+  const progressPercentage = (currentQuestion / TOTAL_QUESTIONS) * 100;
   const progressFill = document.getElementById('progressFill');
   const currentQuestionEl = document.getElementById('currentQuestion');
 
@@ -254,20 +255,21 @@ function updateProgressBar() {
 }
 
 function showResults() {
-  const percentage = Math.round((score / 4) * 100);
+  const percentage = Math.round((score / TOTAL_QUESTIONS) * 100);
   const scoreDisplay = document.getElementById('scoreDisplay');
   const percentageDisplay = document.getElementById('percentageDisplay');
   const resultMessage = document.getElementById('resultMessage');
 
-  if (scoreDisplay) scoreDisplay.textContent = `${score}/4`;
+  if (scoreDisplay) scoreDisplay.textContent = `${score}/${TOTAL_QUESTIONS}`;
   if (percentageDisplay) percentageDisplay.textContent = `${percentage}%`;
 
+  const scoreRatio = score / TOTAL_QUESTIONS;
   let message = '';
-  if (score === 4) {
+  if (score === TOTAL_QUESTIONS) {
     message = 'Perfect! You are a chord master!';
-  } else if (score >= 3) {
+  } else if (scoreRatio >= 0.7) {
     message = 'Great job! You are getting the hang of it!';
-  } else if (score >= 2) {
+  } else if (scoreRatio >= 0.5) {
     message = 'Good effort! Keep practicing!';
   } else {
     message = 'Keep practicing! You will improve!';
@@ -310,17 +312,37 @@ function showDataLoadError(message) {
   `;
 }
 
+function syncQuestionCountText() {
+  const startIntro = document.getElementById('assessmentIntro');
+  const totalQuestions = document.getElementById('totalQuestions');
+  const scoreDisplay = document.getElementById('scoreDisplay');
+
+  if (startIntro) {
+    startIntro.textContent = `Test your knowledge by identifying chord diagrams! You'll be shown ${TOTAL_QUESTIONS} random chords with multiple choice answers.`;
+  }
+
+  if (totalQuestions) {
+    totalQuestions.textContent = String(TOTAL_QUESTIONS);
+  }
+
+  if (scoreDisplay) {
+    scoreDisplay.textContent = `0/${TOTAL_QUESTIONS}`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('assessmentScreen')) {
     return;
   }
+
+  syncQuestionCountText();
 
   try {
     const data = await fetchChordLibrary();
     chordPatterns = data.chordPatterns;
     availableChords = data.availableChords;
 
-    if (availableChords.length < 4) {
+    if (availableChords.length < TOTAL_QUESTIONS) {
       showDataLoadError('Not enough chord data found in the database to run the assessment.');
       return;
     }

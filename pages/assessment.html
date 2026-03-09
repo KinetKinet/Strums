@@ -25,7 +25,7 @@
     <div id="startScreen" class="screen active">
       <div class="start-content">
         <h2>Assessment</h2>
-        <p>Test your knowledge by identifying chord diagrams! You'll be shown 4 random chords with multiple choice answers.</p>
+        <p id="assessmentIntro">Test your knowledge by identifying chord diagrams! You'll be shown random chords with multiple choice answers.</p>
         <button id="startBtn" class="start-button">Start Assessment</button>
       </div>
     </div>
@@ -35,7 +35,7 @@
       <div class="progress-bar">
         <div id="progressFill" class="progress-fill"></div>
       </div>
-      <p class="progress-text">Question <span id="currentQuestion">1</span>/4</p>
+      <p class="progress-text">Question <span id="currentQuestion">1</span>/<span id="totalQuestions">4</span></p>
 
       <div class="assessment-content">
         <!-- Chord Diagram Display -->

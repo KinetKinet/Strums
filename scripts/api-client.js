@@ -6,7 +6,6 @@ function getApiCandidates() {
     return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
   }
 
-  // Production frontend is static-hosted, so API requests must target backend only.
   return ['https://strums-backend.onrender.com'];
 }
 

@@ -275,6 +275,12 @@ body {
     font-weight: 700;
 }
 
+@media (max-width: 640px) {
+    .admin-auth-host {
+        display: none;
+    }
+}
+
 .admin-modal-backdrop {
     position: fixed;
     inset: 0;
