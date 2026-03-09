@@ -6,7 +6,8 @@ function getApiCandidates() {
     return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
   }
 
-  return ['https://strums-backend.onrender.com', window.location.origin];
+  // Production frontend is static-hosted, so API requests must target backend only.
+  return ['https://strums-backend.onrender.com'];
 }
 
 export async function apiJson(path, options = {}) {

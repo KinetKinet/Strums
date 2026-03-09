@@ -6,7 +6,7 @@ function getApiCandidates() {
     return ['http://localhost:5000', 'https://strums-backend.onrender.com'];
   }
 
-  return ['https://strums-backend.onrender.com', window.location.origin];
+  return ['https://strums-backend.onrender.com'];
 }
 
 function parseChordName(name = '') {
