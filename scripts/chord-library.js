@@ -342,8 +342,12 @@ function updateAdminEditor() {
     <label>Name <input id="admin-chord-name" type="text" value="${row.name}" /></label>
     <p class="admin-edit-msg">Current Video: ${hasVideo ? 'Saved in Cloudinary' : 'None'}</p>
     <div class="admin-upload-row">
-      <label for="admin-chord-video-file" class="admin-upload-label">Upload Video File</label>
-      <input id="admin-chord-video-file" type="file" accept="video/*" />
+      <span class="admin-upload-label">Upload Video File</span>
+      <input id="admin-chord-video-file" class="admin-file-input" type="file" accept="video/*" />
+      <div class="admin-file-picker-row">
+        <button id="admin-chord-video-pick" type="button" class="admin-file-pick-btn">Choose Video</button>
+        <span id="admin-chord-video-file-name" class="admin-file-name">No file selected</span>
+      </div>
     </div>
     <label>Frets (comma-separated) <input id="admin-chord-frets" type="text" value="${frets}" /></label>
     <label>Fingers (comma-separated) <input id="admin-chord-fingers" type="text" value="${fingers}" /></label>
@@ -356,10 +360,22 @@ function updateAdminEditor() {
   `;
 
   const saveBtn = document.getElementById('admin-save-chord');
+  const pickBtn = document.getElementById('admin-chord-video-pick');
+
+  pickBtn?.addEventListener('click', () => {
+    const fileInput = document.getElementById('admin-chord-video-file');
+    fileInput?.click();
+  });
+
+  const fileInput = document.getElementById('admin-chord-video-file');
+  fileInput?.addEventListener('change', () => {
+    const fileNameEl = document.getElementById('admin-chord-video-file-name');
+    const selected = fileInput.files?.[0]?.name || 'No file selected';
+    if (fileNameEl) fileNameEl.textContent = selected;
+  });
 
   saveBtn?.addEventListener('click', async () => {
     const msg = document.getElementById('admin-save-chord-msg');
-    const fileInput = document.getElementById('admin-chord-video-file');
     const file = fileInput?.files?.[0];
     let nextVideoUrl = row.videoUrl || '';
 
@@ -421,6 +437,8 @@ function updateAdminEditor() {
       }
 
       if (fileInput) fileInput.value = '';
+      const fileNameEl = document.getElementById('admin-chord-video-file-name');
+      if (fileNameEl) fileNameEl.textContent = 'No file selected';
 
       initializeRootButtons();
       initializeTypeButtons();

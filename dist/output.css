@@ -2001,6 +2001,28 @@ html, body {
 .admin-upload-label {
   font-size: 0.9rem;
 }
+.admin-file-input {
+  display: none;
+}
+.admin-file-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.admin-file-pick-btn {
+  border: 1px solid #60a5fa;
+  background: #1d4ed8;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+.admin-file-name {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+}
 .admin-edit-form input, .admin-edit-form textarea, .admin-editor-card input, .admin-editor-card textarea {
   width: 100%;
   border-radius: 8px;
