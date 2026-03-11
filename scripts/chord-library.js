@@ -88,7 +88,9 @@ function renderDiagram() {
     return;
   }
 
-  let startingFret = 0;
+  const frettedNotes = currentChord.frets.filter((fret) => fret > 0);
+  const minFrettedNote = frettedNotes.length > 0 ? Math.min(...frettedNotes) : 1;
+  let startingFret = minFrettedNote;
   let hasBarre = false;
   if (currentChord.barre && typeof currentChord.barre.fret === 'number') {
     startingFret = currentChord.barre.fret;
@@ -106,7 +108,7 @@ function renderDiagram() {
   `;
 
   const fretRange = [];
-  if (hasBarre) {
+  if (startingFret > 1) {
     for (let i = 0; i < 5; i += 1) {
       fretRange.push(startingFret + i);
     }
