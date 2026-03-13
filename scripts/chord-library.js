@@ -12,6 +12,10 @@ let types = [];
 let selectedRoot = 'C';
 let selectedType = 'Major';
 
+function getSelectedChordKey() {
+  return `${selectedRoot}-${selectedType}`;
+}
+
 function getChordPattern(root, type) {
   const key = `${root}-${type}`;
   return chordPatterns[key] || {
@@ -282,7 +286,7 @@ function showLoadError() {
 }
 
 function getSelectedChordRow() {
-  const key = `${selectedRoot}-${selectedType}`;
+  const key = getSelectedChordKey();
   return rowsByName[key] || null;
 }
 
@@ -292,6 +296,100 @@ function parseNumberArray(input) {
     .map((part) => part.trim())
     .filter((part) => part.length > 0)
     .map((part) => Number(part));
+}
+
+function parseStringArray(input) {
+  return input
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+}
+
+function buildBarrePayload(barreFretInput, barreStringsInput) {
+  const fret = Number(barreFretInput || 0);
+  const stringsList = parseNumberArray(barreStringsInput);
+
+  if (!fret) {
+    return undefined;
+  }
+
+  return {
+    fret,
+    strings: stringsList,
+  };
+}
+
+function getEditorValues() {
+  return {
+    name: document.getElementById('admin-chord-name')?.value.trim() || '',
+    frets: parseNumberArray(document.getElementById('admin-chord-frets')?.value || ''),
+    fingers: parseStringArray(document.getElementById('admin-chord-fingers')?.value || ''),
+    barre: buildBarrePayload(
+      document.getElementById('admin-chord-barre-fret')?.value || '',
+      document.getElementById('admin-chord-barre-strings')?.value || ''
+    ),
+  };
+}
+
+function validateChordEditorValues(values) {
+  if (!values.name) {
+    return 'Chord name is required.';
+  }
+
+  if (values.frets.length !== 6 || values.frets.some((value) => Number.isNaN(value))) {
+    return 'Frets must contain exactly 6 numbers.';
+  }
+
+  if (values.fingers.length !== 6) {
+    return 'Fingers must contain exactly 6 values.';
+  }
+
+  if (values.barre?.fret && values.barre.strings.length === 0) {
+    return 'Add barre string indexes when a barre fret is set.';
+  }
+
+  return '';
+}
+
+function parseChordNameParts(name) {
+  const firstDash = name.indexOf('-');
+  if (firstDash === -1) {
+    return { root: name, type: '' };
+  }
+
+  return {
+    root: name.slice(0, firstDash),
+    type: name.slice(firstDash + 1),
+  };
+}
+
+function syncSelectionToChordName(name) {
+  const parsed = parseChordNameParts(name);
+  if (parsed.root) {
+    selectedRoot = parsed.root;
+  }
+  selectedType = parsed.type || selectedType;
+}
+
+async function refreshChordLibraryState(preferredChordName = '') {
+  const refreshed = await fetchChordLibrary();
+  chordPatterns = refreshed.chordPatterns;
+  rowsByName = refreshed.rowsByName || {};
+  roots = refreshed.roots;
+  types = refreshed.types;
+
+  if (preferredChordName && rowsByName[preferredChordName]) {
+    syncSelectionToChordName(preferredChordName);
+  } else if (rowsByName[getSelectedChordKey()]) {
+    // Keep current selection when possible.
+  } else if (refreshed.availableChords?.length) {
+    syncSelectionToChordName(refreshed.availableChords[0]);
+  }
+
+  initializeRootButtons();
+  initializeTypeButtons();
+  updateChordName();
+  renderDiagram();
 }
 
 function getUploadRouteFriendlyError(err) {
@@ -331,23 +429,23 @@ function updateAdminEditor() {
   }
 
   const row = getSelectedChordRow();
-  if (!row) {
-    panel.hidden = false;
-    panel.innerHTML = '<p class="admin-edit-msg">No database row found for selected chord.</p>';
-    return;
-  }
-
-  const frets = Array.isArray(row.frets) ? row.frets.join(',') : '';
-  const fingers = Array.isArray(row.fingers) ? row.fingers.join(',') : '';
-  const barreFret = row.barre?.fret ?? '';
-  const barreStrings = Array.isArray(row.barre?.strings) ? row.barre.strings.join(',') : '';
-  const hasVideo = Boolean(row.videoUrl);
+  const chordKey = getSelectedChordKey();
+  const frets = Array.isArray(row?.frets) ? row.frets.join(',') : '0,0,0,0,0,0';
+  const fingers = Array.isArray(row?.fingers) ? row.fingers.join(',') : '0,0,0,0,0,0';
+  const barreFret = row?.barre?.fret ?? '';
+  const barreStrings = Array.isArray(row?.barre?.strings) ? row.barre.strings.join(',') : '';
+  const hasVideo = Boolean(row?.videoUrl);
+  const heading = row ? `Editing: <strong>${row.name}</strong>` : `New chord: <strong>${selectedRoot} ${selectedType}</strong>`;
+  const description = row
+    ? 'Save updates, add a new chord row, or delete this one from the database.'
+    : 'This chord is not in the database yet. Fill in the pattern and add it.';
 
   panel.hidden = false;
   panel.innerHTML = `
     <h3>Admin Chord Editor</h3>
-    <p>Editing: <strong>${row.name}</strong></p>
-    <label>Name <input id="admin-chord-name" type="text" value="${row.name}" /></label>
+    <p>${heading}</p>
+    <p class="admin-panel-note">${description}</p>
+    <label>Name <input id="admin-chord-name" type="text" value="${row?.name || chordKey}" /></label>
     <p class="admin-edit-msg">Current Video: ${hasVideo ? 'Saved in Cloudinary' : 'None'}</p>
     <div class="admin-upload-row">
       <span class="admin-upload-label">Upload Video File</span>
@@ -362,12 +460,16 @@ function updateAdminEditor() {
     <label>Barre Fret <input id="admin-chord-barre-fret" type="number" value="${barreFret}" /></label>
     <label>Barre Strings (comma-separated indexes) <input id="admin-chord-barre-strings" type="text" value="${barreStrings}" /></label>
     <div class="admin-edit-actions">
-      <button id="admin-save-chord" type="button">Save Chord</button>
+      <button id="admin-save-chord" type="button" ${row ? '' : 'disabled'}>Save Chord</button>
+      <button id="admin-add-chord" type="button" class="admin-secondary-btn">Add Chord</button>
+      <button id="admin-delete-chord" type="button" class="admin-danger-btn" ${row ? '' : 'disabled'}>Delete Chord</button>
       <span id="admin-save-chord-msg" class="admin-edit-msg"></span>
     </div>
   `;
 
   const saveBtn = document.getElementById('admin-save-chord');
+  const addBtn = document.getElementById('admin-add-chord');
+  const deleteBtn = document.getElementById('admin-delete-chord');
   const pickBtn = document.getElementById('admin-chord-video-pick');
 
   pickBtn?.addEventListener('click', () => {
@@ -382,43 +484,59 @@ function updateAdminEditor() {
     if (fileNameEl) fileNameEl.textContent = selected;
   });
 
-  saveBtn?.addEventListener('click', async () => {
+  async function uploadVideoIfNeeded(currentVideoUrl) {
     const msg = document.getElementById('admin-save-chord-msg');
     const file = fileInput?.files?.[0];
-    let nextVideoUrl = row.videoUrl || '';
+    if (!file) {
+      return currentVideoUrl;
+    }
+
+    if (msg) msg.textContent = 'Uploading video...';
+    const formData = new FormData();
+    formData.append('video', file);
+
+    const uploaded = await apiJson('/api/cloudinary/upload-video', {
+      method: 'POST',
+      headers: {
+        ...getAuthHeaders(),
+      },
+      body: formData,
+    });
+
+    if (!uploaded?.videoUrl) {
+      throw new Error('Upload succeeded but no video URL was returned');
+    }
+
+    return uploaded.videoUrl;
+  }
+
+  function resetFilePicker() {
+    if (fileInput) fileInput.value = '';
+    const fileNameEl = document.getElementById('admin-chord-video-file-name');
+    if (fileNameEl) fileNameEl.textContent = 'No file selected';
+  }
+
+  saveBtn?.addEventListener('click', async () => {
+    const msg = document.getElementById('admin-save-chord-msg');
 
     try {
-      if (file) {
-        if (msg) msg.textContent = 'Uploading video...';
-        const formData = new FormData();
-        formData.append('video', file);
-
-        const uploaded = await apiJson('/api/cloudinary/upload-video', {
-          method: 'POST',
-          headers: {
-            ...getAuthHeaders(),
-          },
-          body: formData,
-        });
-
-        if (!uploaded?.videoUrl) {
-          throw new Error('Upload succeeded but no video URL was returned');
-        }
-
-        nextVideoUrl = uploaded.videoUrl;
+      const values = getEditorValues();
+      const validationError = validateChordEditorValues(values);
+      if (validationError) {
+        if (msg) msg.textContent = validationError;
+        return;
       }
+
+      const nextVideoUrl = await uploadVideoIfNeeded(row?.videoUrl || '');
 
       if (msg) msg.textContent = 'Saving chord...';
 
       const updatedPayload = {
-        name: document.getElementById('admin-chord-name').value.trim(),
+        name: values.name,
         videoUrl: nextVideoUrl,
-        frets: parseNumberArray(document.getElementById('admin-chord-frets').value),
-        fingers: document.getElementById('admin-chord-fingers').value.split(',').map((x) => x.trim()),
-        barre: {
-          fret: Number(document.getElementById('admin-chord-barre-fret').value || 0),
-          strings: parseNumberArray(document.getElementById('admin-chord-barre-strings').value),
-        },
+        frets: values.frets,
+        fingers: values.fingers,
+        barre: values.barre,
       };
 
       await apiJson(`/api/chord-library/${row._id}`, {
@@ -430,28 +548,78 @@ function updateAdminEditor() {
         body: JSON.stringify(updatedPayload),
       });
 
-      if (msg) msg.textContent = 'Saved';
+      resetFilePicker();
+      await refreshChordLibraryState(updatedPayload.name);
+      const nextMsg = document.getElementById('admin-save-chord-msg');
+      if (nextMsg) nextMsg.textContent = 'Saved.';
+    } catch (err) {
+      if (msg) msg.textContent = getUploadRouteFriendlyError(err);
+    }
+  });
 
-      const refreshed = await fetchChordLibrary();
-      chordPatterns = refreshed.chordPatterns;
-      rowsByName = refreshed.rowsByName || {};
-      roots = refreshed.roots;
-      types = refreshed.types;
+  addBtn?.addEventListener('click', async () => {
+    const msg = document.getElementById('admin-save-chord-msg');
 
-      const parsed = updatedPayload.name.split('-');
-      if (parsed.length >= 2) {
-        selectedRoot = parsed[0];
-        selectedType = parsed.slice(1).join('-');
+    try {
+      const values = getEditorValues();
+      const validationError = validateChordEditorValues(values);
+      if (validationError) {
+        if (msg) msg.textContent = validationError;
+        return;
       }
 
-      if (fileInput) fileInput.value = '';
-      const fileNameEl = document.getElementById('admin-chord-video-file-name');
-      if (fileNameEl) fileNameEl.textContent = 'No file selected';
+      const nextVideoUrl = await uploadVideoIfNeeded(row?.videoUrl || '');
 
-      initializeRootButtons();
-      initializeTypeButtons();
-      updateChordName();
-      renderDiagram();
+      if (msg) msg.textContent = 'Adding chord...';
+
+      await apiJson('/api/chord-library', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({
+          name: values.name,
+          videoUrl: nextVideoUrl,
+          frets: values.frets,
+          fingers: values.fingers,
+          barre: values.barre,
+        }),
+      });
+
+      resetFilePicker();
+      await refreshChordLibraryState(values.name);
+      const nextMsg = document.getElementById('admin-save-chord-msg');
+      if (nextMsg) nextMsg.textContent = 'Chord added.';
+    } catch (err) {
+      if (msg) msg.textContent = getUploadRouteFriendlyError(err);
+    }
+  });
+
+  deleteBtn?.addEventListener('click', async () => {
+    const msg = document.getElementById('admin-save-chord-msg');
+    if (!row) {
+      if (msg) msg.textContent = 'Select a saved chord to delete.';
+      return;
+    }
+
+    if (!window.confirm(`Delete ${row.name} from the database?`)) {
+      return;
+    }
+
+    try {
+      if (msg) msg.textContent = 'Deleting chord...';
+
+      await apiJson(`/api/chord-library/${row._id}`, {
+        method: 'DELETE',
+        headers: {
+          ...getAuthHeaders(),
+        },
+      });
+
+      await refreshChordLibraryState();
+      const nextMsg = document.getElementById('admin-save-chord-msg');
+      if (nextMsg) nextMsg.textContent = 'Chord deleted.';
     } catch (err) {
       if (msg) msg.textContent = getUploadRouteFriendlyError(err);
     }
