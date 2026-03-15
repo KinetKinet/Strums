@@ -16,6 +16,78 @@ function getSelectedChordKey() {
   return `${selectedRoot}-${selectedType}`;
 }
 
+function getAvailableChordNames() {
+  return Object.keys(rowsByName);
+}
+
+function getAvailableRootsForType(type) {
+  const rootsForType = new Set();
+
+  getAvailableChordNames().forEach((name) => {
+    const [root, chordType] = name.split(/-(.+)/);
+    if (chordType === type && root) {
+      rootsForType.add(root);
+    }
+  });
+
+  return Array.from(rootsForType).sort();
+}
+
+function getAvailableTypesForRoot(root) {
+  const typesForRoot = new Set();
+
+  getAvailableChordNames().forEach((name) => {
+    const [chordRoot, chordType] = name.split(/-(.+)/);
+    if (chordRoot === root && chordType) {
+      typesForRoot.add(chordType);
+    }
+  });
+
+  const preferredOrder = ['Major', 'Minor', '7'];
+  return Array.from(typesForRoot).sort((left, right) => {
+    const leftIndex = preferredOrder.indexOf(left);
+    const rightIndex = preferredOrder.indexOf(right);
+
+    if (leftIndex === -1 && rightIndex === -1) {
+      return left.localeCompare(right);
+    }
+
+    if (leftIndex === -1) return 1;
+    if (rightIndex === -1) return -1;
+    return leftIndex - rightIndex;
+  });
+}
+
+function ensureValidSelection(preferredChordName = '') {
+  if (preferredChordName && rowsByName[preferredChordName]) {
+    syncSelectionToChordName(preferredChordName);
+  }
+
+  let availableTypes = getAvailableTypesForRoot(selectedRoot);
+  if (!availableTypes.length) {
+    const allNames = getAvailableChordNames();
+    if (!allNames.length) {
+      return;
+    }
+
+    syncSelectionToChordName(allNames[0]);
+    availableTypes = getAvailableTypesForRoot(selectedRoot);
+  }
+
+  if (!availableTypes.includes(selectedType)) {
+    selectedType = availableTypes[0];
+  }
+
+  const availableRoots = getAvailableRootsForType(selectedType);
+  if (!availableRoots.includes(selectedRoot)) {
+    selectedRoot = availableRoots[0];
+    const nextTypes = getAvailableTypesForRoot(selectedRoot);
+    if (!nextTypes.includes(selectedType)) {
+      selectedType = nextTypes[0];
+    }
+  }
+}
+
 function getChordPattern(root, type) {
   const key = `${root}-${type}`;
   return chordPatterns[key] || {
@@ -203,14 +275,18 @@ function renderDiagram() {
 
 function selectRoot(root) {
   selectedRoot = root;
-  updateRootButtons();
+  ensureValidSelection();
+  initializeRootButtons();
+  initializeTypeButtons();
   updateChordName();
   renderDiagram();
 }
 
 function selectType(type) {
   selectedType = type;
-  updateTypeButtons();
+  ensureValidSelection();
+  initializeRootButtons();
+  initializeTypeButtons();
   updateChordName();
   renderDiagram();
 }
@@ -242,7 +318,7 @@ function initializeRootButtons() {
   if (!container) return;
 
   container.innerHTML = '';
-  roots.forEach((root) => {
+  getAvailableRootsForType(selectedType).forEach((root) => {
     const btn = document.createElement('button');
     btn.className = 'slider-btn';
     btn.textContent = root;
@@ -260,7 +336,7 @@ function initializeTypeButtons() {
   if (!container) return;
 
   container.innerHTML = '';
-  types.forEach((type) => {
+  getAvailableTypesForRoot(selectedRoot).forEach((type) => {
     const btn = document.createElement('button');
     btn.className = 'slider-btn';
     btn.textContent = type;
@@ -378,14 +454,7 @@ async function refreshChordLibraryState(preferredChordName = '') {
   roots = refreshed.roots;
   types = refreshed.types;
 
-  if (preferredChordName && rowsByName[preferredChordName]) {
-    syncSelectionToChordName(preferredChordName);
-  } else if (rowsByName[getSelectedChordKey()]) {
-    // Keep current selection when possible.
-  } else if (refreshed.availableChords?.length) {
-    syncSelectionToChordName(refreshed.availableChords[0]);
-  }
-
+  ensureValidSelection(preferredChordName);
   initializeRootButtons();
   initializeTypeButtons();
   updateChordName();
@@ -643,8 +712,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    selectedRoot = roots.includes('C') ? 'C' : roots[0];
-    selectedType = types.includes('Major') ? 'Major' : types[0];
+    selectedRoot = rowsByName['C-Major'] ? 'C' : roots[0];
+    selectedType = rowsByName['C-Major'] ? 'Major' : types[0];
+    ensureValidSelection();
 
     initializeRootButtons();
     initializeTypeButtons();

@@ -1,6 +1,7 @@
 import express from "express";
 import ChordPattern from "../models/ChordLibrary.js";
 import requireAdmin from "../middleware/requireAdmin.js";
+import { ALLOWED_CHORD_NAME_SET, ALLOWED_CHORD_NAMES } from "../config/allowedChordNames.js";
 
 const router = express.Router();
 
@@ -17,6 +18,10 @@ function buildChordPayload(body = {}) {
 function validateChordPayload(payload) {
   if (!payload.name) {
     return "Chord name is required";
+  }
+
+  if (!ALLOWED_CHORD_NAME_SET.has(payload.name)) {
+    return `Only supported chords can be saved: ${ALLOWED_CHORD_NAMES.join(", ")}`;
   }
 
   if (!Array.isArray(payload.frets) || payload.frets.length !== 6 || payload.frets.some((value) => Number.isNaN(Number(value)))) {
@@ -37,7 +42,7 @@ function validateChordPayload(payload) {
 // GET all Chord Patterns
 router.get("/", async (req, res) => {
   try {
-    const chordPatterns = await ChordPattern.find().sort({ name: 1 });
+    const chordPatterns = await ChordPattern.find({ name: { $in: ALLOWED_CHORD_NAMES } }).sort({ name: 1 });
     res.json(chordPatterns);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -69,15 +74,25 @@ router.post("/", requireAdmin, async (req, res) => {
 // PUT chord by id (admin only)
 router.put("/:id", requireAdmin, async (req, res) => {
   try {
+    const payload = buildChordPayload(req.body);
+    const validationError = validateChordPayload(payload);
+
+    if (validationError) {
+      return res.status(400).json({ message: validationError });
+    }
+
+    const duplicate = await ChordPattern.findOne({
+      _id: { $ne: req.params.id },
+      name: payload.name,
+    });
+
+    if (duplicate) {
+      return res.status(409).json({ message: "A chord with that name already exists" });
+    }
+
     const updated = await ChordPattern.findByIdAndUpdate(
       req.params.id,
-      {
-        name: req.body.name,
-        videoUrl: req.body.videoUrl,
-        frets: req.body.frets,
-        fingers: req.body.fingers,
-        barre: req.body.barre,
-      },
+      payload,
       { new: true, runValidators: true }
     );
 

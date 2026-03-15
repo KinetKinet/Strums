@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import ChordPattern from './models/ChordLibrary.js';
+import { ALLOWED_CHORD_NAME_SET } from './config/allowedChordNames.js';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ const dataPath = path.join(__dirname, 'chordPatterns.json');
 async function run() {
   try {
     const json = fs.readFileSync(dataPath, 'utf8');
-    const chords = JSON.parse(json);
+    const chords = JSON.parse(json).filter((chord) => ALLOWED_CHORD_NAME_SET.has(chord?.name));
 
     await mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('Connected to MongoDB for chord seeding');
