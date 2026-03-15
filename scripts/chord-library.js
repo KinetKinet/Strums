@@ -20,17 +20,17 @@ function getAvailableChordNames() {
   return Object.keys(rowsByName);
 }
 
-function getAvailableRootsForType(type) {
-  const rootsForType = new Set();
+function getAllAvailableRoots() {
+  const allRoots = new Set();
 
   getAvailableChordNames().forEach((name) => {
-    const [root, chordType] = name.split(/-(.+)/);
-    if (chordType === type && root) {
-      rootsForType.add(root);
+    const [root] = name.split(/-(.+)/);
+    if (root) {
+      allRoots.add(root);
     }
   });
 
-  return Array.from(rootsForType).sort();
+  return Array.from(allRoots).sort();
 }
 
 function getAvailableTypesForRoot(root) {
@@ -63,6 +63,15 @@ function ensureValidSelection(preferredChordName = '') {
     syncSelectionToChordName(preferredChordName);
   }
 
+  const allRoots = getAllAvailableRoots();
+  if (!allRoots.length) {
+    return;
+  }
+
+  if (!allRoots.includes(selectedRoot)) {
+    selectedRoot = allRoots[0];
+  }
+
   let availableTypes = getAvailableTypesForRoot(selectedRoot);
   if (!availableTypes.length) {
     const allNames = getAvailableChordNames();
@@ -76,15 +85,6 @@ function ensureValidSelection(preferredChordName = '') {
 
   if (!availableTypes.includes(selectedType)) {
     selectedType = availableTypes[0];
-  }
-
-  const availableRoots = getAvailableRootsForType(selectedType);
-  if (!availableRoots.includes(selectedRoot)) {
-    selectedRoot = availableRoots[0];
-    const nextTypes = getAvailableTypesForRoot(selectedRoot);
-    if (!nextTypes.includes(selectedType)) {
-      selectedType = nextTypes[0];
-    }
   }
 }
 
@@ -318,7 +318,7 @@ function initializeRootButtons() {
   if (!container) return;
 
   container.innerHTML = '';
-  getAvailableRootsForType(selectedType).forEach((root) => {
+  getAllAvailableRoots().forEach((root) => {
     const btn = document.createElement('button');
     btn.className = 'slider-btn';
     btn.textContent = root;
