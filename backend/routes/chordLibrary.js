@@ -1,7 +1,6 @@
 import express from "express";
 import ChordPattern from "../models/ChordLibrary.js";
 import requireAdmin from "../middleware/requireAdmin.js";
-import { ALLOWED_CHORD_NAME_SET, ALLOWED_CHORD_NAMES } from "../config/allowedChordNames.js";
 
 const router = express.Router();
 
@@ -18,10 +17,6 @@ function buildChordPayload(body = {}) {
 function validateChordPayload(payload) {
   if (!payload.name) {
     return "Chord name is required";
-  }
-
-  if (!ALLOWED_CHORD_NAME_SET.has(payload.name)) {
-    return `Only supported chords can be saved: ${ALLOWED_CHORD_NAMES.join(", ")}`;
   }
 
   if (!Array.isArray(payload.frets) || payload.frets.length !== 6 || payload.frets.some((value) => Number.isNaN(Number(value)))) {
@@ -42,7 +37,7 @@ function validateChordPayload(payload) {
 // GET all Chord Patterns
 router.get("/", async (req, res) => {
   try {
-    const chordPatterns = await ChordPattern.find({ name: { $in: ALLOWED_CHORD_NAMES } }).sort({ name: 1 });
+    const chordPatterns = await ChordPattern.find().sort({ name: 1 });
     res.json(chordPatterns);
   } catch (err) {
     res.status(500).json({ message: err.message });
