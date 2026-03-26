@@ -174,7 +174,7 @@ function renderDiagram() {
   }
 
   let html = `
-    <div class="diagram-wrapper">
+      <div class="diagram-wrapper diagram-wrapper-with-guide">
       <div class="diagram">
         <div class="string-labels">
           ${strings.map((s) => `<div class="string-label">${s}</div>`).join('')}
@@ -266,6 +266,9 @@ function renderDiagram() {
             <span>Barre</span>
           </div>
         </div>
+      </div>
+      <div class="diagram-guide" aria-hidden="true">
+        <img class="diagram-guide-image" src="../assets/images/FingerPlacement.png" alt="Finger Placement Guide">
       </div>
     </div>
   `;

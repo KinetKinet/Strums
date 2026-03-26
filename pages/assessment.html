@@ -42,6 +42,8 @@
         <div class="diagram-section">
           <h3>What chord is this?</h3>
           <div id="assessmentDiagram" class="assessment-diagram"></div>
+          <button id="playChordBtn" class="play-chord-btn" aria-label="Play chord">Play</button>
+          <p id="playChordMsg" class="play-chord-msg"></p>
         </div>
 
         <!-- Multiple Choice Options -->
@@ -76,6 +78,16 @@
         <p id="resultMessage" class="result-message"></p>
         <button id="restartBtn" class="restart-button">Try Again</button>
       </div>
+    </div>
+  </div>
+
+  <div id="chordVideoModal" class="chord-video-modal" hidden>
+    <div class="chord-video-card" role="dialog" aria-modal="true" aria-labelledby="chordVideoTitle">
+      <div class="chord-video-top">
+        <h3 id="chordVideoTitle">Chord Video</h3>
+        <button id="closeChordVideo" type="button" aria-label="Close chord video">Close</button>
+      </div>
+      <video id="chordVideoPlayer" controls playsinline preload="metadata"></video>
     </div>
   </div>
 
