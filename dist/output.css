@@ -1764,8 +1764,58 @@ html, body {
   bottom: 3rem;
   pointer-events: none;
 }
-.diagram-guide-image {
+.guide-hand-map {
   width: 150px;
+  position: relative;
+}
+.guide-finger-overlay {
+  position: absolute;
+  inset: 0;
+}
+.guide-finger-number {
+  position: absolute;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.72rem;
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.guide-finger-number.finger-1 {
+  left: 38%;
+  top: 27%;
+}
+.guide-finger-number.finger-2 {
+  left: 53%;
+  top: 19%;
+}
+.guide-finger-number.finger-3 {
+  left: 68%;
+  top: 30%;
+}
+.guide-finger-number.finger-4 {
+  left: 79%;
+  top: 45%;
+}
+.guide-finger-number.is-active {
+  background: #1e293b;
+  border-color: #ffffff;
+  color: #ffffff;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, calc(-50% - 1px));
+}
+.diagram-guide-image {
+  width: 100%;
   height: auto;
   border-radius: 4px;
 }

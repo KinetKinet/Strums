@@ -153,6 +153,11 @@ function renderDiagram() {
   if (!diagramContainer) return;
 
   const currentChord = getChordPattern(selectedRoot, selectedType);
+  const usedFingerNumbers = new Set(
+    currentChord.fingers
+      .map((value) => String(value).trim())
+      .filter((value) => ['1', '2', '3', '4'].includes(value)),
+  );
 
   if (currentChord.isPlaceholder) {
     diagramContainer.innerHTML = `
@@ -268,7 +273,14 @@ function renderDiagram() {
         </div>
       </div>
       <div class="diagram-guide" aria-hidden="true">
-        <img class="diagram-guide-image" src="../assets/images/FingerPlacement.png" alt="Finger Placement Guide">
+        <div class="guide-hand-map" aria-hidden="true">
+          <img class="diagram-guide-image" src="../assets/images/FingerPlacement.png" alt="Finger Placement Guide">
+          <div class="guide-finger-overlay" aria-hidden="true">
+            ${['1', '2', '3', '4']
+              .map((finger) => `<span class="guide-finger-number finger-${finger}${usedFingerNumbers.has(finger) ? ' is-active' : ''}">${finger}</span>`)
+              .join('')}
+          </div>
+        </div>
       </div>
     </div>
   `;

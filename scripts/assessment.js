@@ -5,55 +5,12 @@ const TOTAL_QUESTIONS = 5;
 
 let chordPatterns = {};
 let availableChords = [];
-let rowsByName = {};
 
 let currentQuestion = 0;
 let score = 0;
 let currentChordKey = '';
 let selectedAnswer = null;
 let questionsAsked = [];
-
-function hideVideoPlayer() {
-  const modal = document.getElementById('chordVideoModal');
-  const video = document.getElementById('chordVideoPlayer');
-  if (!modal || !video) return;
-
-  modal.hidden = true;
-  video.pause();
-  video.removeAttribute('src');
-  video.load();
-}
-
-function openVideoPlayer(videoUrl) {
-  const modal = document.getElementById('chordVideoModal');
-  const video = document.getElementById('chordVideoPlayer');
-  const title = document.getElementById('chordVideoTitle');
-  const msg = document.getElementById('playChordMsg');
-
-  if (!modal || !video) return;
-
-  if (!videoUrl) {
-    if (msg) {
-      msg.textContent = 'No video yet for this chord.';
-    }
-    return;
-  }
-
-  if (msg) msg.textContent = '';
-  if (title) title.textContent = 'Listen to the chord';
-
-  video.src = videoUrl;
-  modal.hidden = false;
-  video.currentTime = 0;
-  video.play().catch(() => {
-    // Ignore autoplay restrictions.
-  });
-}
-
-function playCurrentChord() {
-  const row = rowsByName[currentChordKey];
-  openVideoPlayer(row?.videoUrl || '');
-}
 
 function renderChordDiagram(chordKey, containerId) {
   const currentChord = chordPatterns[chordKey];
@@ -195,7 +152,6 @@ function displayQuestion() {
     }
 
     renderChordDiagram(currentChordKey, 'assessmentDiagram');
-    hideVideoPlayer();
     displayOptions();
     clearFeedback();
     updateProgressBar();
@@ -301,8 +257,6 @@ function updateProgressBar() {
 }
 
 function showResults() {
-  hideVideoPlayer();
-
   const percentage = Math.round((score / TOTAL_QUESTIONS) * 100);
   const scoreDisplay = document.getElementById('scoreDisplay');
   const percentageDisplay = document.getElementById('percentageDisplay');
@@ -341,7 +295,6 @@ function switchScreen(screenId) {
 }
 
 function resetAssessment() {
-  hideVideoPlayer();
   currentQuestion = 0;
   score = 0;
   selectedAnswer = null;
@@ -390,7 +343,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const data = await fetchChordLibrary();
     chordPatterns = data.chordPatterns;
     availableChords = data.availableChords;
-    rowsByName = data.rowsByName || {};
 
     if (availableChords.length < TOTAL_QUESTIONS) {
       showDataLoadError('Not enough chord data found in the database to run the assessment.');
@@ -410,21 +362,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (restartBtn) {
       restartBtn.addEventListener('click', resetAssessment);
     }
-
-    const playBtn = document.getElementById('playChordBtn');
-    if (playBtn) {
-      playBtn.addEventListener('click', playCurrentChord);
-    }
-
-    const closeVideoBtn = document.getElementById('closeChordVideo');
-    closeVideoBtn?.addEventListener('click', hideVideoPlayer);
-
-    const videoBackdrop = document.getElementById('chordVideoModal');
-    videoBackdrop?.addEventListener('click', (e) => {
-      if (e.target === videoBackdrop) {
-        hideVideoPlayer();
-      }
-    });
 
     switchScreen('startScreen');
   } catch (error) {
