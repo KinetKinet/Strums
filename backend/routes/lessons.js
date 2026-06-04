@@ -40,4 +40,22 @@ router.put("/:id", requireAdmin, async (req, res) => {
   }
 });
 
+// POST create new lesson (admin only)
+router.post("/", requireAdmin, async (req, res) => {
+  try {
+    const created = await Lesson.create({
+      chapter: req.body.chapter,
+      tag: req.body.tag,
+      title: req.body.title,
+      description: req.body.description,
+      data: req.body.data,
+      videoUrl: req.body.videoUrl,
+    });
+
+    return res.status(201).json(created);
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+});
+
 export default router;

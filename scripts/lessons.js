@@ -67,7 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function lessonEditorTemplate(lesson) {
     const dataJson = JSON.stringify(lesson.data || {}, null, 2);
-    const currentVideoUrl = lesson.videoUrl || lesson.data?.videoUrl || '';
+    const currentVideos = (lesson.data && lesson.data.videos) || (lesson.videoUrl ? [lesson.videoUrl] : []);
+    const currentVideosHtml = currentVideos.length
+      ? currentVideos.map((v, i) => `<div>Video ${i + 1}: ${v ? 'Saved in Cloudinary' : 'None'}</div>`).join('')
+      : 'None';
 
     return `
       <div class="admin-edit-wrap">
@@ -77,13 +80,21 @@ document.addEventListener('DOMContentLoaded', () => {
           <label>Tag <input type="text" id="edit-tag-${lesson._id}" value="${lesson.tag || ''}" /></label>
           <label>Title <input type="text" id="edit-title-${lesson._id}" value="${lesson.title || ''}" /></label>
           <label>Description <textarea id="edit-description-${lesson._id}">${lesson.description || ''}</textarea></label>
-          <p class="admin-edit-msg">Current Video: ${currentVideoUrl ? 'Saved in Cloudinary' : 'None'}</p>
+          <p class="admin-edit-msg">Current Videos: ${currentVideosHtml}</p>
           <div class="admin-upload-row">
-            <span class="admin-upload-label">Upload Video File</span>
-            <input id="edit-video-file-${lesson._id}" class="admin-file-input" type="file" accept="video/*" />
+            <span class="admin-upload-label">Upload Video File 1</span>
+            <input id="edit-video-file-${lesson._id}-1" class="admin-file-input" type="file" accept="video/*" />
             <div class="admin-file-picker-row">
-              <button id="edit-video-pick-${lesson._id}" type="button" class="admin-file-pick-btn">Choose Video</button>
-              <span id="edit-video-file-name-${lesson._id}" class="admin-file-name">No file selected</span>
+              <button id="edit-video-pick-${lesson._id}-1" type="button" class="admin-file-pick-btn">Choose Video 1</button>
+              <span id="edit-video-file-name-${lesson._id}-1" class="admin-file-name">No file selected</span>
+            </div>
+          </div>
+          <div class="admin-upload-row">
+            <span class="admin-upload-label">Upload Video File 2</span>
+            <input id="edit-video-file-${lesson._id}-2" class="admin-file-input" type="file" accept="video/*" />
+            <div class="admin-file-picker-row">
+              <button id="edit-video-pick-${lesson._id}-2" type="button" class="admin-file-pick-btn">Choose Video 2</button>
+              <span id="edit-video-file-name-${lesson._id}-2" class="admin-file-name">No file selected</span>
             </div>
           </div>
           <label>Data JSON <textarea id="edit-data-${lesson._id}" class="admin-json">${dataJson}</textarea></label>
@@ -176,7 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const lessonVideoUrl = lesson.videoUrl || data.videoUrl;
-      if (lessonVideoUrl) {
+      const videos = (Array.isArray(data.videos) && data.videos.length) ? data.videos : (lessonVideoUrl ? [lessonVideoUrl] : []);
+      if (videos.length) {
         const title = document.createElement('div');
         title.className = 'section-title';
         title.textContent = 'Video';
@@ -184,12 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const videoWrap = document.createElement('div');
         videoWrap.className = 'video-wrap';
-        const video = document.createElement('video');
-        video.controls = true;
-        video.src = lessonVideoUrl;
-        video.className = 'lesson-video';
-        video.setAttribute('playsinline', '');
-        videoWrap.appendChild(video);
+        videos.forEach((vUrl) => {
+          const video = document.createElement('video');
+          video.controls = true;
+          video.src = vUrl;
+          video.className = 'lesson-video';
+          video.setAttribute('playsinline', '');
+          videoWrap.appendChild(video);
+        });
         panel.appendChild(videoWrap);
       }
 
@@ -299,15 +313,20 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', async () => {
         const id = btn.getAttribute('data-lesson-save');
         const msg = document.getElementById(`lesson-save-msg-${id}`);
-        const fileInput = document.getElementById(`edit-video-file-${id}`);
-        const videoFile = fileInput?.files?.[0];
 
         try {
-          let nextVideoUrl = '';
-          if (videoFile) {
-            if (msg) msg.textContent = 'Uploading video...';
+          // upload any selected video files (supports multiple inputs: -1, -2)
+          const fileInputs = Array.from(document.querySelectorAll(`[id^="edit-video-file-${id}"]`));
+          const uploadedUrls = [];
+
+          for (let i = 0; i < fileInputs.length; i++) {
+            const input = fileInputs[i];
+            const file = input?.files?.[0];
+            if (!file) continue;
+
+            if (msg) msg.textContent = `Uploading video ${i + 1} of ${fileInputs.length}...`;
             const formData = new FormData();
-            formData.append('video', videoFile);
+            formData.append('video', file);
 
             const uploaded = await apiJson('/api/cloudinary/upload-video', {
               method: 'POST',
@@ -321,17 +340,15 @@ document.addEventListener('DOMContentLoaded', () => {
               throw new Error('Upload succeeded but no video URL was returned');
             }
 
-            nextVideoUrl = uploaded.videoUrl;
+            uploadedUrls.push(uploaded.videoUrl);
           }
 
           const parsedData = JSON.parse(document.getElementById(`edit-data-${id}`).value || '{}');
-          if (nextVideoUrl) {
-            parsedData.videoUrl = nextVideoUrl;
+          if (uploadedUrls.length) {
+            parsedData.videos = (parsedData.videos || []).concat(uploadedUrls);
           }
 
-          if (!nextVideoUrl) {
-            nextVideoUrl = parsedData.videoUrl || '';
-          }
+          const nextVideoUrl = (parsedData.videos && parsedData.videos[0]) || parsedData.videoUrl || '';
 
           if (msg) msg.textContent = 'Saving lesson...';
 
@@ -344,19 +361,37 @@ document.addEventListener('DOMContentLoaded', () => {
             data: parsedData,
           };
 
-          await apiJson(`/api/lessons/${id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              ...getAuthHeaders(),
-            },
-            body: JSON.stringify(payload),
-          });
+          // If this is a placeholder new lesson id (starts with new-), create via POST
+          if (String(id).startsWith('new-')) {
+            await apiJson('/api/lessons', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+          } else {
+            await apiJson(`/api/lessons/${id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders(),
+              },
+              body: JSON.stringify(payload),
+            });
+          }
 
           if (msg) msg.textContent = 'Saved';
-          if (fileInput) fileInput.value = '';
-          const fileNameEl = document.getElementById(`edit-video-file-name-${id}`);
-          if (fileNameEl) fileNameEl.textContent = 'No file selected';
+
+          // reset file inputs and names
+          fileInputs.forEach((inp) => {
+            if (inp) inp.value = '';
+            const idSuffix = inp.id.replace('edit-video-file-', '');
+            const fileNameEl = document.getElementById(`edit-video-file-name-${idSuffix}`);
+            if (fileNameEl) fileNameEl.textContent = 'No file selected';
+          });
+
           await loadLessons();
         } catch (err) {
           if (msg) msg.textContent = getUploadRouteFriendlyError(err);
@@ -387,9 +422,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const lessons = await apiJson('/api/lessons');
       lessonsCache = Array.isArray(lessons) ? lessons : [];
 
+      // If admin and Chapter 6 is missing, add a placeholder so it appears in the UI
+      if (isAdminLoggedIn()) {
+        const hasSix = lessonsCache.some((l) => Number(l.chapter) === 6);
+        if (!hasSix) {
+          lessonsCache.push({
+            _id: `new-chapter-6`,
+            chapter: 6,
+            tag: 'Chapter 6',
+            title: 'Chapter 6',
+            description: '',
+            data: { videos: [] },
+          });
+        }
+      }
+
       if (!activeChapter && lessonsCache[0]) {
         activeChapter = Number(lessonsCache[0].chapter);
       }
+
+      // keep sorted by chapter number
+      lessonsCache.sort((a, b) => Number(a.chapter) - Number(b.chapter));
 
       if (loading) loading.remove();
       renderLessons();
