@@ -196,13 +196,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const videoWrap = document.createElement('div');
         videoWrap.className = 'video-wrap';
-        videos.forEach((vUrl) => {
+        const labelsForChapter6 = Number(lesson.chapter) === 6 ? ['Strumming', 'Plucking'] : [];
+        videos.forEach((vUrl, idx) => {
+          const item = document.createElement('div');
+          item.className = 'video-item';
+
+          if (labelsForChapter6[idx]) {
+            const lbl = document.createElement('div');
+            lbl.className = 'video-label';
+            lbl.textContent = labelsForChapter6[idx];
+            item.appendChild(lbl);
+          }
+
           const video = document.createElement('video');
           video.controls = true;
           video.src = vUrl;
           video.className = 'lesson-video';
           video.setAttribute('playsinline', '');
-          videoWrap.appendChild(video);
+          item.appendChild(video);
+
+          videoWrap.appendChild(item);
         });
         panel.appendChild(videoWrap);
       }

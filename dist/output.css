@@ -880,7 +880,9 @@
 .video-wrap {
   margin: 16px 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 .lesson-video {
   width: 100%;
@@ -891,6 +893,31 @@
   border: 3px solid #E9B348;
   box-shadow: 0 8px 30px rgba(0,0,0,0.6);
   display: block;
+}
+
+.lesson-panel .video-wrap {
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.video-item {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.video-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 28px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 @media (max-width: 768px) {
   .hamburger {
