@@ -235,11 +235,12 @@
 .chord-name { font-size: 1.4rem; font-weight: bold; color: #E9B348; margin-bottom: 6px; }
 .chord-hint { font-size: 0.78rem; color: #fff; }
 
-/* VIDEO PLAYER */
 .video-wrap {
     margin: 16px 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
 }
 .lesson-video {
     width: 100%;
