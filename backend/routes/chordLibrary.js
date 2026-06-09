@@ -1,5 +1,5 @@
 import express from "express";
-import ChordPattern from "../models/ChordLibrary.js";
+import { query } from "../db/index.js";
 import requireAdmin from "../middleware/requireAdmin.js";
 
 const router = express.Router();
@@ -37,8 +37,8 @@ function validateChordPayload(payload) {
 // GET all Chord Patterns
 router.get("/", async (req, res) => {
   try {
-    const chordPatterns = await ChordPattern.find().sort({ name: 1 });
-    res.json(chordPatterns);
+    const r = await query('SELECT id, name, video_url, frets, fingers, barre FROM chord_patterns ORDER BY name ASC');
+    res.json(r.rows);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -54,13 +54,12 @@ router.post("/", requireAdmin, async (req, res) => {
       return res.status(400).json({ message: validationError });
     }
 
-    const existing = await ChordPattern.findOne({ name: payload.name });
-    if (existing) {
-      return res.status(409).json({ message: "A chord with that name already exists" });
-    }
+    const check = await query('SELECT 1 FROM chord_patterns WHERE name = $1', [payload.name]);
+    if (check.rowCount > 0) return res.status(409).json({ message: 'A chord with that name already exists' });
 
-    const created = await ChordPattern.create(payload);
-    return res.status(201).json(created);
+    const insert = `INSERT INTO chord_patterns (name, video_url, frets, fingers, barre) VALUES ($1,$2,$3,$4,$5) RETURNING id, name, video_url, frets, fingers, barre`;
+    const r = await query(insert, [payload.name, payload.videoUrl || null, payload.frets, payload.fingers, payload.barre || null]);
+    return res.status(201).json(r.rows[0]);
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -76,26 +75,13 @@ router.put("/:id", requireAdmin, async (req, res) => {
       return res.status(400).json({ message: validationError });
     }
 
-    const duplicate = await ChordPattern.findOne({
-      _id: { $ne: req.params.id },
-      name: payload.name,
-    });
+    const dupCheck = await query('SELECT 1 FROM chord_patterns WHERE id <> $1 AND name = $2', [req.params.id, payload.name]);
+    if (dupCheck.rowCount > 0) return res.status(409).json({ message: 'A chord with that name already exists' });
 
-    if (duplicate) {
-      return res.status(409).json({ message: "A chord with that name already exists" });
-    }
-
-    const updated = await ChordPattern.findByIdAndUpdate(
-      req.params.id,
-      payload,
-      { new: true, runValidators: true }
-    );
-
-    if (!updated) {
-      return res.status(404).json({ message: "Chord pattern not found" });
-    }
-
-    return res.json(updated);
+    const updateQ = `UPDATE chord_patterns SET name=$1, video_url=$2, frets=$3, fingers=$4, barre=$5 WHERE id=$6 RETURNING id, name, video_url, frets, fingers, barre`;
+    const r = await query(updateQ, [payload.name, payload.videoUrl || null, payload.frets, payload.fingers, payload.barre || null, req.params.id]);
+    if (r.rowCount === 0) return res.status(404).json({ message: 'Chord pattern not found' });
+    return res.json(r.rows[0]);
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
@@ -104,13 +90,9 @@ router.put("/:id", requireAdmin, async (req, res) => {
 // DELETE chord by id (admin only)
 router.delete("/:id", requireAdmin, async (req, res) => {
   try {
-    const deleted = await ChordPattern.findByIdAndDelete(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Chord pattern not found" });
-    }
-
-    return res.json({ message: "Chord deleted", id: req.params.id });
+    const del = await query('DELETE FROM chord_patterns WHERE id = $1', [req.params.id]);
+    if (del.rowCount === 0) return res.status(404).json({ message: 'Chord pattern not found' });
+    return res.json({ message: 'Chord deleted', id: req.params.id });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }

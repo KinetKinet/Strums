@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import { pool } from './db/index.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import lessonsRoutes from './routes/lessons.js';
@@ -19,24 +19,16 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/cloudinary', cloudinaryRoutes);
 
 const PORT = process.env.PORT || 5000;
-const MONGO = process.env.MONGO_URI;
-
-console.log('Attempting to connect to MongoDB at:', MONGO);
-
-mongoose.connect(MONGO, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true,
-  connectTimeoutMS: 30000,
-  socketTimeoutMS: 30000,
-  serverSelectionTimeoutMS: 30000,
-  retryWrites: false
-})
-  .then(() => {
-    console.log('Successfully connected to MongoDB');
+// Connect to Postgres and start server
+async function start() {
+  try {
+    await pool.connect();
+    console.log('Connected to Postgres');
     app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
-  })
-  .catch(err => {
-    console.error('Mongo connection error:', err.message || err);
-    console.error('Full error:', err);
+  } catch (err) {
+    console.error('Postgres connection error:', err.message || err);
     process.exit(1);
-  });
+  }
+}
+
+start();
