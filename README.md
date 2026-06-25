@@ -60,16 +60,5 @@ All admin endpoints require a JWT obtained from `POST /api/admin/login`.
 
 - Run the schema migration in the backend migrations folder when upgrading older environments.
 - The project has been migrated to PostgreSQL and Mongoose-related model files and the one-off migration script were removed to keep the codebase tidy.
-- If you need to re-run a migration from MongoDB to Postgres I can recreate the migration script or help you write a custom ETL that reads exported JSON and inserts rows into Postgres.
-
-**If you want me to:**
-
-- Generate a strong `JWT_SECRET` and update `backend/.env` (I will back up the file first), or
-- Recreate a migration script that can import from the Mongo dump into Postgres, or
-- Add an ORM (Knex/TypeORM) and refactor the DB layer.
-
----
-
-Last updated: 2026-06-09
 
 #
