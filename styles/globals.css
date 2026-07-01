@@ -104,54 +104,80 @@ body {
 .guide-finger-overlay {
     position: absolute;
     inset: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.guide-finger-placement {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+    transform-origin: center center;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+    animation: guide-finger-pop 220ms ease-out;
+}
+
+.guide-finger-card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.98;
 }
 
 .guide-finger-number {
     position: absolute;
-    width: 1.45rem;
-    height: 1.45rem;
+    display: grid;
+    place-items: center;
+    width: 1.28rem;
+    height: 1.28rem;
     border-radius: 999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(15, 23, 42, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.72rem;
-    font-weight: 700;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.guide-finger-number.finger-1 {
-    left: 38%;
-    top: 27%;
-}
-
-.guide-finger-number.finger-2 {
-    left: 53%;
-    top: 19%;
-}
-
-.guide-finger-number.finger-3 {
-    left: 68%;
-    top: 30%;
-}
-
-.guide-finger-number.finger-4 {
-    left: 79%;
-    top: 45%;
-}
-
-.guide-finger-number.is-active {
-    background: #1e293b;
-    border-color: #ffffff;
+    background: rgba(15, 23, 42, 0.88);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     color: #ffffff;
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, calc(-50% - 1px));
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    transform: translate(-50%, -50%);
+}
+
+.finger-placement-index .guide-finger-number {
+    left: 34%;
+    top: 16%;
+}
+
+.finger-placement-middle .guide-finger-number {
+    left: 52%;
+    top: 8%;
+}
+
+.finger-placement-ring .guide-finger-number {
+    left: 69%;
+    top: 16%;
+}
+
+.finger-placement-pinkie .guide-finger-number {
+    left: 84%;
+    top: 28%;
+}
+
+.finger-placement-index {
+    z-index: 1;
+}
+
+.finger-placement-middle {
+    z-index: 2;
+}
+
+.finger-placement-ring {
+    z-index: 3;
+}
+
+.finger-placement-pinkie {
+    z-index: 4;
 }
 
 .diagram-guide-image {
@@ -243,6 +269,34 @@ body {
     color: white;
     font-size: 0.75rem;
     font-weight: bold;
+}
+
+.finger-dot.finger-color-index,
+.barre-dot.finger-color-index {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    border-color: #dcfce7;
+    color: #ffffff;
+}
+
+.finger-dot.finger-color-middle,
+.barre-dot.finger-color-middle {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    border-color: #fee2e2;
+    color: #ffffff;
+}
+
+.finger-dot.finger-color-ring,
+.barre-dot.finger-color-ring {
+    background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+    border-color: #fef9c3;
+    color: #ffffff;
+}
+
+.finger-dot.finger-color-pinkie,
+.barre-dot.finger-color-pinkie {
+    background: linear-gradient(135deg, #f9a8d4 0%, #ec4899 100%);
+    border-color: #fce7f3;
+    color: #ffffff;
 }
 
 .open-string {
@@ -631,6 +685,18 @@ body {
     color: white;
     font-size: 0.75rem;
     font-weight: bold;
+}
+
+@keyframes guide-finger-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .legend-dot-barre {

@@ -12,6 +12,51 @@ let types = [];
 let selectedRoot = 'C';
 let selectedType = 'Major';
 
+const fingerPlacementMeta = {
+  '1': {
+    label: 'Index',
+    image: '../assets/images/FingerPlacement-index.png',
+    colorClass: 'finger-color-index',
+    guideClass: 'finger-placement-index',
+  },
+  '2': {
+    label: 'Middle',
+    image: '../assets/images/FingerPlacement-middle.png',
+    colorClass: 'finger-color-middle',
+    guideClass: 'finger-placement-middle',
+  },
+  '3': {
+    label: 'Ring',
+    image: '../assets/images/FingerPlacement-ring.png',
+    colorClass: 'finger-color-ring',
+    guideClass: 'finger-placement-ring',
+  },
+  '4': {
+    label: 'Pinkie',
+    image: '../assets/images/FingerPlacement-pinkie.png',
+    colorClass: 'finger-color-pinkie',
+    guideClass: 'finger-placement-pinkie',
+  },
+};
+
+function getFingerPlacementMeta(fingerValue) {
+  const fingerKey = String(fingerValue || '').trim();
+  return fingerPlacementMeta[fingerKey] || null;
+}
+
+function getActiveFingerPlacements(currentChord) {
+  const usedFingerNumbers = new Set(
+    currentChord.fingers
+      .map((value) => String(value).trim())
+      .filter((value) => ['1', '2', '3', '4'].includes(value)),
+  );
+
+  return ['1', '2', '3', '4']
+    .filter((fingerNumber) => usedFingerNumbers.has(fingerNumber))
+    .map((fingerNumber) => ({ fingerNumber, ...fingerPlacementMeta[fingerNumber] }))
+    .filter((placement) => placement.image);
+}
+
 function getSelectedChordKey() {
   return `${selectedRoot}-${selectedType}`;
 }
@@ -153,11 +198,7 @@ function renderDiagram() {
   if (!diagramContainer) return;
 
   const currentChord = getChordPattern(selectedRoot, selectedType);
-  const usedFingerNumbers = new Set(
-    currentChord.fingers
-      .map((value) => String(value).trim())
-      .filter((value) => ['1', '2', '3', '4'].includes(value)),
-  );
+  const activeFingerPlacements = getActiveFingerPlacements(currentChord);
 
   if (currentChord.isPlaceholder) {
     diagramContainer.innerHTML = `
@@ -227,13 +268,15 @@ function renderDiagram() {
       html += '<div class="string-line"></div>';
 
       if (chordFret === fretNum && fretNum > 0) {
+        const fingerMeta = getFingerPlacementMeta(currentChord.fingers[stringIndex]);
         html += `
-          <div class="finger-dot">
+          <div class="finger-dot ${fingerMeta?.colorClass || ''}">
             ${currentChord.fingers[stringIndex]}
           </div>
         `;
       } else if (hasBarre && fretNum === startingFret && currentChord.barre.strings.includes(stringIndex)) {
-        html += `<div class="barre-dot">${currentChord.fingers[stringIndex]}</div>`;
+        const fingerMeta = getFingerPlacementMeta(currentChord.fingers[stringIndex]);
+        html += `<div class="barre-dot ${fingerMeta?.colorClass || ''}">${currentChord.fingers[stringIndex]}</div>`;
       }
 
       if (chordFret === 0 && fretNum === fretRange[0]) {
@@ -274,10 +317,15 @@ function renderDiagram() {
       </div>
       <div class="diagram-guide" aria-hidden="true">
         <div class="guide-hand-map" aria-hidden="true">
-          <img class="diagram-guide-image" src="../assets/images/FingerPlacement.png" alt="Finger Placement Guide">
+          <img class="diagram-guide-image" src="../assets/images/FingerPlacement.png" alt="">
           <div class="guide-finger-overlay" aria-hidden="true">
-            ${['1', '2', '3', '4']
-              .map((finger) => `<span class="guide-finger-number finger-${finger}${usedFingerNumbers.has(finger) ? ' is-active' : ''}">${finger}</span>`)
+            ${activeFingerPlacements
+              .map((placement) => `
+                <div class="guide-finger-placement ${placement.colorClass} ${placement.guideClass}" data-finger="${placement.fingerNumber}">
+                  <img class="guide-finger-card-image" src="${placement.image}" alt="">
+                  <span class="guide-finger-number">${placement.fingerNumber}</span>
+                </div>
+              `)
               .join('')}
           </div>
         </div>
