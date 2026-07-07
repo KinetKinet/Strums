@@ -1947,7 +1947,7 @@ html, body {
   color: #ffffff;
 }
 .finger-dot.finger-color-middle, .barre-dot.finger-color-middle {
-  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  background: linear-gradient(135deg, #ed1515 0%, #ed1d1d 100%);
   border-color: #fee2e2;
   color: #ffffff;
 }

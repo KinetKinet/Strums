@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let lessonsCache = [];
   let activeChapter = null;
 
+  function getLessonAdminId(lesson) {
+    return lesson?._id || lesson?.id || '';
+  }
+
   function getUploadRouteFriendlyError(err) {
     const raw = String(err?.message || 'Upload failed');
     const missingUploadRoute = (
@@ -66,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function lessonEditorTemplate(lesson) {
+    const lessonId = getLessonAdminId(lesson);
     const dataJson = JSON.stringify(lesson.data || {}, null, 2);
     const currentVideos = (lesson.data && lesson.data.videos) || (lesson.videoUrl ? [lesson.videoUrl] : []);
     const currentVideosHtml = currentVideos.length
@@ -74,33 +79,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="admin-edit-wrap">
-        <button class="admin-edit-toggle" data-lesson-toggle="${lesson._id}" type="button">Edit Lesson</button>
-        <div class="admin-edit-form" id="lesson-editor-${lesson._id}" hidden>
-          <label>Chapter <input type="number" id="edit-chapter-${lesson._id}" value="${lesson.chapter || ''}" /></label>
-          <label>Tag <input type="text" id="edit-tag-${lesson._id}" value="${lesson.tag || ''}" /></label>
-          <label>Title <input type="text" id="edit-title-${lesson._id}" value="${lesson.title || ''}" /></label>
-          <label>Description <textarea id="edit-description-${lesson._id}">${lesson.description || ''}</textarea></label>
+        <button class="admin-edit-toggle" data-lesson-toggle="${lessonId}" type="button">Edit Lesson</button>
+        <div class="admin-edit-form" id="lesson-editor-${lessonId}" hidden>
+          <label>Chapter <input type="number" id="edit-chapter-${lessonId}" value="${lesson.chapter || ''}" /></label>
+          <label>Tag <input type="text" id="edit-tag-${lessonId}" value="${lesson.tag || ''}" /></label>
+          <label>Title <input type="text" id="edit-title-${lessonId}" value="${lesson.title || ''}" /></label>
+          <label>Description <textarea id="edit-description-${lessonId}">${lesson.description || ''}</textarea></label>
           <p class="admin-edit-msg">Current Videos: ${currentVideosHtml}</p>
           <div class="admin-upload-row">
             <span class="admin-upload-label">Upload Video File 1</span>
-            <input id="edit-video-file-${lesson._id}-1" class="admin-file-input" type="file" accept="video/*" />
+            <input id="edit-video-file-${lessonId}-1" class="admin-file-input" type="file" accept="video/*" />
             <div class="admin-file-picker-row">
-              <button id="edit-video-pick-${lesson._id}-1" type="button" class="admin-file-pick-btn">Choose Video 1</button>
-              <span id="edit-video-file-name-${lesson._id}-1" class="admin-file-name">No file selected</span>
+              <button id="edit-video-pick-${lessonId}-1" type="button" class="admin-file-pick-btn">Choose Video 1</button>
+              <span id="edit-video-file-name-${lessonId}-1" class="admin-file-name">No file selected</span>
             </div>
           </div>
           <div class="admin-upload-row">
             <span class="admin-upload-label">Upload Video File 2</span>
-            <input id="edit-video-file-${lesson._id}-2" class="admin-file-input" type="file" accept="video/*" />
+            <input id="edit-video-file-${lessonId}-2" class="admin-file-input" type="file" accept="video/*" />
             <div class="admin-file-picker-row">
-              <button id="edit-video-pick-${lesson._id}-2" type="button" class="admin-file-pick-btn">Choose Video 2</button>
-              <span id="edit-video-file-name-${lesson._id}-2" class="admin-file-name">No file selected</span>
+              <button id="edit-video-pick-${lessonId}-2" type="button" class="admin-file-pick-btn">Choose Video 2</button>
+              <span id="edit-video-file-name-${lessonId}-2" class="admin-file-name">No file selected</span>
             </div>
           </div>
-          <label>Data JSON <textarea id="edit-data-${lesson._id}" class="admin-json">${dataJson}</textarea></label>
+          <label>Data JSON <textarea id="edit-data-${lessonId}" class="admin-json">${dataJson}</textarea></label>
           <div class="admin-edit-actions">
-            <button type="button" data-lesson-save="${lesson._id}">Save</button>
-            <span id="lesson-save-msg-${lesson._id}" class="admin-edit-msg"></span>
+            <button type="button" data-lesson-save="${lessonId}">Save</button>
+            <span id="lesson-save-msg-${lessonId}" class="admin-edit-msg"></span>
           </div>
         </div>
       </div>
@@ -294,7 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
         panel.appendChild(tipBox);
       }
 
-      if (loggedIn && lesson._id) {
+      const lessonId = getLessonAdminId(lesson);
+      if (loggedIn && lessonId) {
         const adminArea = document.createElement('div');
         adminArea.innerHTML = lessonEditorTemplate(lesson);
         panel.appendChild(adminArea);
@@ -433,7 +439,13 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadLessons() {
     try {
       const lessons = await apiJson('/api/lessons');
-      lessonsCache = Array.isArray(lessons) ? lessons : [];
+      lessonsCache = Array.isArray(lessons)
+        ? lessons.map((lesson) => ({
+          ...lesson,
+          _id: lesson._id || lesson.id,
+          videoUrl: lesson.videoUrl || lesson.video_url || '',
+        }))
+        : [];
 
       // If admin and Chapter 6 is missing, add a placeholder so it appears in the UI
       if (isAdminLoggedIn()) {
@@ -476,6 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.classList.remove('show');
     });
   }
+
+  window.addEventListener('strums-admin-changed', () => {
+    if (lessonsCache.length) {
+      renderLessons();
+    }
+  });
 
   loadLessons();
 });

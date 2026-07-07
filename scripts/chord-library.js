@@ -810,6 +810,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideVideoPlayer();
       }
     });
+
+    window.addEventListener('strums-admin-changed', () => {
+      updateAdminEditor();
+    });
   } catch (error) {
     console.error(error);
     showLoadError();
