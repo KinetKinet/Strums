@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 .button { 
-    border-color:#52452b;
-    background-color: #e9b348;
+    border-color:#52452B;
+    background-color: #E9B348;
     color: #ffffff;
 
     @apply

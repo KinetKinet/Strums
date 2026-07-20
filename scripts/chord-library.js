@@ -184,7 +184,6 @@ function openVideoPlayer(videoUrl, chordNameText) {
   modal.hidden = false;
   video.currentTime = 0;
   video.play().catch(() => {
-    // Ignore autoplay restrictions.
   });
 }
 
