@@ -71,7 +71,11 @@ function normalizeChordRows(rows) {
       fingers: row.fingers,
       barre: row.barre || null,
     };
-    rowsByName[row.name] = row;
+    rowsByName[row.name] = {
+      ...row,
+      videoUrl: row.videoUrl || row.video_url || '',
+      video_url: row.video_url || row.videoUrl || '',
+    };
 
     if (root) roots.add(root);
     if (type) types.add(type);

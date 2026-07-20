@@ -183,13 +183,12 @@ function openVideoPlayer(videoUrl, chordNameText) {
   video.src = videoUrl;
   modal.hidden = false;
   video.currentTime = 0;
-  video.play().catch(() => {
-  });
+  video.play().catch(() => {});
 }
 
 function playCurrentChord() {
   const row = getSelectedChordRow();
-  openVideoPlayer(row?.videoUrl || '', `${selectedRoot} ${selectedType}`);
+  openVideoPlayer(row?.videoUrl || row?.video_url || '', `${selectedRoot} ${selectedType}`);
 }
 
 function renderDiagram() {

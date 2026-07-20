@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let lessonsCache = [];
   let activeChapter = null;
+  let lessonVideoObserver = null;
 
   function getLessonAdminId(lesson) {
     return lesson?._id || lesson?.id || '';
@@ -55,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', () => {
         const chapter = btn.dataset.chapter;
         activeChapter = Number(chapter);
+        pauseOtherLessonVideos();
 
         btns.forEach((b) => b.classList.remove('active'));
         panels.forEach((p) => p.classList.remove('active'));
@@ -110,6 +112,38 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
+  }
+
+  function pauseOtherLessonVideos(exceptVideo = null) {
+    document.querySelectorAll('video.lesson-video').forEach((video) => {
+      if (video !== exceptVideo && !video.paused) {
+        video.pause();
+      }
+    });
+  }
+
+  function bindLessonVideoBehavior() {
+    if (lessonVideoObserver) {
+      lessonVideoObserver.disconnect();
+    }
+
+    lessonVideoObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting && !entry.target.paused) {
+          entry.target.pause();
+        }
+      });
+    }, {
+      threshold: 0.5,
+    });
+
+    document.querySelectorAll('video.lesson-video').forEach((video) => {
+      video.addEventListener('play', () => {
+        pauseOtherLessonVideos(video);
+      });
+
+      lessonVideoObserver.observe(video);
+    });
   }
 
   function renderLessons() {
@@ -218,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
           video.src = vUrl;
           video.className = 'lesson-video';
           video.setAttribute('playsinline', '');
+          video.preload = 'metadata';
           item.appendChild(video);
 
           videoWrap.appendChild(item);
@@ -311,6 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     bindChapterButtons();
     bindAdminEditors();
+    bindLessonVideoBehavior();
   }
 
   function bindAdminEditors() {
